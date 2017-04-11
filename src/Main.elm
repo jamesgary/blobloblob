@@ -34,6 +34,7 @@ init : ( Model, Cmd Msg )
 init =
     ( { playerPos = ( 400, 225 )
       , arenaSize = ( 800, 450 )
+      , vel = ( 0, 0 )
       , isMovingUp = False
       , isMovingRight = False
       , isMovingDown = False
@@ -63,7 +64,7 @@ update msg model =
 updateAnimFrame : Model -> Time.Time -> Model
 updateAnimFrame model time =
     let
-        xDiff =
+        xDir =
             if model.isMovingRight then
                 1
             else if model.isMovingLeft then
@@ -71,7 +72,7 @@ updateAnimFrame model time =
             else
                 0
 
-        yDiff =
+        yDir =
             if model.isMovingUp then
                 -1
             else if model.isMovingDown then
@@ -79,15 +80,34 @@ updateAnimFrame model time =
             else
                 0
 
-        ( x, y ) =
+        ( posX, posY ) =
             model.playerPos
 
+        ( velX, velY ) =
+            model.vel
+
+        c =
+            0.15
+
+        friction =
+            0.8
+
+        ( newVelX, newVelY ) =
+            ( ((velX + (xDir * c)) * friction)
+            , ((velY + (yDir * c)) * friction)
+            )
+
         newPos =
-            ( (x + xDiff), (y + yDiff) )
+            ( ((time * newVelX * friction) + posX)
+            , ((time * newVelY * friction) + posY)
+            )
+
+        newVel =
+            ( newVelX, newVelY )
     in
         ({ model
-            | playerPos =
-                newPos
+            | playerPos = newPos
+            , vel = newVel
          }
         )
 
