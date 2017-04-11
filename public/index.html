@@ -1,0 +1,17 @@
+<html>
+<head>
+  <meta charset="utf8" />
+  <title>Stuff</title>
+  <link rel="stylesheet" href="./css/main.css"></link>
+</head>
+<body>
+  <div class="game-container" data-role="elm-container">
+  </div>
+
+  <script src="./js/main.js"></script>
+  <script>
+    var elmContainer = document.querySelector("[data-role=elm-container]");
+    var app = Elm.Main.embed(elmContainer);
+  </script>
+</body>
+</html>
