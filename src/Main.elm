@@ -10,6 +10,13 @@ import AnimationFrame
 import Time
 
 
+-- mine
+
+import Common exposing (..)
+import Input exposing (..)
+import View exposing (view)
+
+
 main =
     Html.program
         { init = init
@@ -21,16 +28,6 @@ main =
 
 
 -- MODEL
-
-
-type alias Model =
-    { playerPos : ( Float, Float )
-    , isMovingUp : Bool
-    , isMovingRight : Bool
-    , isMovingDown : Bool
-    , isMovingLeft : Bool
-    , arenaSize : ( Float, Float )
-    }
 
 
 init : ( Model, Cmd Msg )
@@ -50,28 +47,6 @@ init =
 -- UPDATE
 
 
-type Msg
-    = KeyDown Int
-    | KeyUp Int
-    | AnimFrame Time.Time
-
-
-upKeyCode =
-    87
-
-
-rightKeyCode =
-    68
-
-
-downKeyCode =
-    83
-
-
-leftKeyCode =
-    65
-
-
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -83,44 +58,6 @@ update msg model =
 
         AnimFrame time ->
             ( (updateAnimFrame model time), Cmd.none )
-
-
-updateKeyDown : Model -> Int -> Model
-updateKeyDown model key =
-    case key of
-        87 ->
-            { model | isMovingUp = True }
-
-        68 ->
-            { model | isMovingRight = True }
-
-        83 ->
-            { model | isMovingDown = True }
-
-        65 ->
-            { model | isMovingLeft = True }
-
-        _ ->
-            model
-
-
-updateKeyUp : Model -> Int -> Model
-updateKeyUp model key =
-    case key of
-        87 ->
-            { model | isMovingUp = False }
-
-        68 ->
-            { model | isMovingRight = False }
-
-        83 ->
-            { model | isMovingDown = False }
-
-        65 ->
-            { model | isMovingLeft = False }
-
-        _ ->
-            model
 
 
 updateAnimFrame : Model -> Time.Time -> Model
@@ -166,57 +103,3 @@ subscriptions model =
         , Keyboard.ups KeyUp
         , AnimationFrame.diffs AnimFrame
         ]
-
-
-
--- VIEW
-
-
-view : Model -> Html Msg
-view model =
-    div
-        [ class "game" ]
-        [ viewArena model
-        ]
-
-
-viewArena : Model -> Html Msg
-viewArena model =
-    let
-        ( width, height ) =
-            model.arenaSize
-    in
-        div
-            [ class "arena"
-            , style
-                [ ( "width", px width )
-                , ( "height", px height )
-                ]
-            ]
-            [ viewPlayer model
-            ]
-
-
-viewPlayer : Model -> Html Msg
-viewPlayer model =
-    let
-        ( x, y ) =
-            model.playerPos
-    in
-        div
-            [ class "player"
-            , style
-                [ ( "transform", translate x y )
-                ]
-            ]
-            []
-
-
-translate : Float -> Float -> String
-translate x y =
-    "translate(" ++ (px x) ++ "," ++ (px y) ++ ")"
-
-
-px : Float -> String
-px num =
-    (toString num) ++ "px"
