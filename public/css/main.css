@@ -29,8 +29,8 @@ html, body {
   height: 50px;
   background: pink;
   position: absolute;
-  top: -25px;
-  left: -25px;
+  top: -27px;
+  left: -27px;
   border: 2px solid red;
   border-radius: 100%;
 }

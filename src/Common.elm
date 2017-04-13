@@ -5,6 +5,7 @@ import Time
 
 type alias Model =
     { playerPos : ( Float, Float )
+    , playerRad : Float
     , isMovingUp : Bool
     , isMovingRight : Bool
     , isMovingDown : Bool

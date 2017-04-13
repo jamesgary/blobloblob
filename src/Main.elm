@@ -33,6 +33,7 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { playerPos = ( 400, 225 )
+      , playerRad = 52
       , arenaSize = ( 800, 450 )
       , vel = ( 0, 0 )
       , isMovingUp = False
@@ -97,16 +98,27 @@ updateAnimFrame model time =
             , ((velY + (yDir * c)) * friction)
             )
 
-        newPos =
+        ( newPosX, newPosY ) =
             ( ((time * newVelX * friction) + posX)
             , ((time * newVelY * friction) + posY)
+            )
+
+        ( arenaWidth, arenaHeight ) =
+            model.arenaSize
+
+        halfRad =
+            model.playerRad * 0.5
+
+        clampedPos =
+            ( (clamp halfRad (arenaWidth - halfRad) newPosX)
+            , (clamp halfRad (arenaHeight - halfRad) newPosY)
             )
 
         newVel =
             ( newVelX, newVelY )
     in
         ({ model
-            | playerPos = newPos
+            | playerPos = clampedPos
             , vel = newVel
          }
         )
