@@ -5,46 +5,78 @@ import Common exposing (..)
 
 updateKeyDown : Model -> Int -> Model
 updateKeyDown model key =
-    case inputFromKey key of
-        MoveUp ->
-            { model | isMovingUp = True }
+    let
+        inputs =
+            model.currentInputs
 
-        MoveRight ->
-            { model | isMovingRight = True }
+        newInputs =
+            case inputFromKey key of
+                Move Up ->
+                    { inputs | isMovingUp = True }
 
-        MoveDown ->
-            { model | isMovingDown = True }
+                Move Right ->
+                    { inputs | isMovingRight = True }
 
-        MoveLeft ->
-            { model | isMovingLeft = True }
+                Move Down ->
+                    { inputs | isMovingDown = True }
 
-        Fire ->
-            { model | isFiring = True }
+                Move Left ->
+                    { inputs | isMovingLeft = True }
 
-        _ ->
-            model
+                Fire Up ->
+                    { inputs | isFiringUp = True }
+
+                Fire Right ->
+                    { inputs | isFiringRight = True }
+
+                Fire Down ->
+                    { inputs | isFiringDown = True }
+
+                Fire Left ->
+                    { inputs | isFiringLeft = True }
+
+                Noop ->
+                    inputs
+    in
+        { model | currentInputs = newInputs }
 
 
 updateKeyUp : Model -> Int -> Model
 updateKeyUp model key =
-    case inputFromKey key of
-        MoveUp ->
-            { model | isMovingUp = False }
+    let
+        inputs =
+            model.currentInputs
 
-        MoveRight ->
-            { model | isMovingRight = False }
+        newInputs =
+            case inputFromKey key of
+                Move Up ->
+                    { inputs | isMovingUp = False }
 
-        MoveDown ->
-            { model | isMovingDown = False }
+                Move Right ->
+                    { inputs | isMovingRight = False }
 
-        MoveLeft ->
-            { model | isMovingLeft = False }
+                Move Down ->
+                    { inputs | isMovingDown = False }
 
-        Fire ->
-            { model | isFiring = False }
+                Move Left ->
+                    { inputs | isMovingLeft = False }
 
-        _ ->
-            model
+                Fire Up ->
+                    { inputs | isFiringUp = False }
+
+                Fire Right ->
+                    { inputs | isFiringRight = False }
+
+                Fire Down ->
+                    { inputs | isFiringDown = False }
+
+                Fire Left ->
+                    { inputs | isFiringLeft = False }
+
+                Noop ->
+                    inputs
+    in
+        { model | currentInputs = newInputs }
 
 
 
@@ -54,20 +86,37 @@ updateKeyUp model key =
 inputFromKey : Int -> Input
 inputFromKey key =
     case key of
+        -- w
         87 ->
-            MoveUp
+            Move Up
 
+        -- d
         68 ->
-            MoveRight
+            Move Right
 
+        -- s
         83 ->
-            MoveDown
+            Move Down
 
+        -- a
         65 ->
-            MoveLeft
+            Move Left
 
+        -- i
+        73 ->
+            Fire Up
+
+        -- l
+        76 ->
+            Fire Right
+
+        -- k
+        75 ->
+            Fire Down
+
+        -- j
         74 ->
-            Fire
+            Fire Left
 
         _ ->
-            None
+            Noop

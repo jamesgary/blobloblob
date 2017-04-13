@@ -6,21 +6,26 @@ import Time
 type alias Model =
     { playerPos : ( Float, Float )
     , playerRad : Float
-    , isMovingUp : Bool
-    , isMovingRight : Bool
-    , isMovingDown : Bool
-    , isMovingLeft : Bool
     , vel : ( Float, Float )
     , arenaSize : ( Float, Float )
-    , isFiring : Bool
     , bullets : List Bullet
     , fireCooldown : Time.Time
+    , currentInputs :
+        { isMovingUp : Bool
+        , isMovingRight : Bool
+        , isMovingDown : Bool
+        , isMovingLeft : Bool
+        , isFiringUp : Bool
+        , isFiringRight : Bool
+        , isFiringDown : Bool
+        , isFiringLeft : Bool
+        }
     }
 
 
 type alias Bullet =
     { pos : ( Float, Float )
-    , dir : Dir
+    , angle : Float
     }
 
 
@@ -31,12 +36,9 @@ type Msg
 
 
 type Input
-    = MoveUp
-    | MoveRight
-    | MoveDown
-    | MoveLeft
-    | Fire
-    | None
+    = Move Dir
+    | Fire Dir
+    | Noop
 
 
 type Dir
