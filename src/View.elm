@@ -34,6 +34,7 @@ viewArena model =
                 ]
             ]
             [ viewPlayer model
+            , viewBullets model
             ]
 
 
@@ -45,6 +46,26 @@ viewPlayer model =
     in
         div
             [ class "player"
+            , style
+                [ ( "transform", translate x y )
+                ]
+            ]
+            []
+
+
+viewBullets : Model -> Html Msg
+viewBullets model =
+    div [ class "bullets" ] (List.map viewBullet model.bullets)
+
+
+viewBullet : Bullet -> Html Msg
+viewBullet bullet =
+    let
+        ( x, y ) =
+            bullet.pos
+    in
+        div
+            [ class "bullet"
             , style
                 [ ( "transform", translate x y )
                 ]

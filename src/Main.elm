@@ -40,6 +40,9 @@ init =
       , isMovingRight = False
       , isMovingDown = False
       , isMovingLeft = False
+      , isFiring = False
+      , fireCooldown = 0
+      , bullets = []
       }
     , Cmd.none
     )
@@ -64,6 +67,14 @@ update msg model =
 
 updateAnimFrame : Model -> Time.Time -> Model
 updateAnimFrame model time =
+    model
+        |> movePlayer time
+        |> fireBullets time
+        |> moveBullets time
+
+
+movePlayer : Time.Time -> Model -> Model
+movePlayer time model =
     let
         xDir =
             if model.isMovingRight then
@@ -122,6 +133,77 @@ updateAnimFrame model time =
             , vel = newVel
          }
         )
+
+
+bulletFireCooldown =
+    100
+
+
+fireBullets : Time.Time -> Model -> Model
+fireBullets time model =
+    let
+        fireCooldown =
+            model.fireCooldown - time
+
+        shouldFire =
+            (model.isFiring && fireCooldown <= 0)
+    in
+        if shouldFire then
+            { model
+                | fireCooldown = bulletFireCooldown
+                , bullets =
+                    ({ pos = model.playerPos
+                     , dir = Left
+                     }
+                        :: model.bullets
+                    )
+            }
+        else
+            { model
+                | fireCooldown = fireCooldown
+            }
+
+
+moveBullets : Time.Time -> Model -> Model
+moveBullets time model =
+    { model
+        | bullets = List.map (moveBullet time) model.bullets
+    }
+
+
+bulletSpeed =
+    5
+
+
+moveBullet : Time.Time -> Bullet -> Bullet
+moveBullet time bullet =
+    let
+        ( xDir, yDir ) =
+            case bullet.dir of
+                Up ->
+                    ( 0, -1 )
+
+                Right ->
+                    ( 1, 0 )
+
+                Down ->
+                    ( 1, 0 )
+
+                Left ->
+                    ( -1, 0 )
+
+        ( x, y ) =
+            bullet.pos
+
+        newX =
+            x + (xDir * bulletSpeed)
+
+        newY =
+            y + (yDir * bulletSpeed)
+    in
+        { bullet
+            | pos = ( newX, newY )
+        }
 
 
 

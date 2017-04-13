@@ -34,3 +34,14 @@ html, body {
   border: 2px solid red;
   border-radius: 100%;
 }
+
+.bullet {
+  width: 10px;
+  height: 10px;
+  background: yellow;
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  border: 1px solid orange;
+  border-radius: 100%;
+}

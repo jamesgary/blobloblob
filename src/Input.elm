@@ -5,18 +5,21 @@ import Common exposing (..)
 
 updateKeyDown : Model -> Int -> Model
 updateKeyDown model key =
-    case dirFromKey key of
-        Up ->
+    case inputFromKey key of
+        MoveUp ->
             { model | isMovingUp = True }
 
-        Right ->
+        MoveRight ->
             { model | isMovingRight = True }
 
-        Down ->
+        MoveDown ->
             { model | isMovingDown = True }
 
-        Left ->
+        MoveLeft ->
             { model | isMovingLeft = True }
+
+        Fire ->
+            { model | isFiring = True }
 
         _ ->
             model
@@ -24,37 +27,47 @@ updateKeyDown model key =
 
 updateKeyUp : Model -> Int -> Model
 updateKeyUp model key =
-    case dirFromKey key of
-        Up ->
+    case inputFromKey key of
+        MoveUp ->
             { model | isMovingUp = False }
 
-        Right ->
+        MoveRight ->
             { model | isMovingRight = False }
 
-        Down ->
+        MoveDown ->
             { model | isMovingDown = False }
 
-        Left ->
+        MoveLeft ->
             { model | isMovingLeft = False }
+
+        Fire ->
+            { model | isFiring = False }
 
         _ ->
             model
 
 
-dirFromKey : Int -> Dir
-dirFromKey key =
+
+-- http://keycode.info/
+
+
+inputFromKey : Int -> Input
+inputFromKey key =
     case key of
         87 ->
-            Up
+            MoveUp
 
         68 ->
-            Right
+            MoveRight
 
         83 ->
-            Down
+            MoveDown
 
         65 ->
-            Left
+            MoveLeft
+
+        74 ->
+            Fire
 
         _ ->
             None
