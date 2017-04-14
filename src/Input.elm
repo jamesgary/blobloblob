@@ -1,5 +1,6 @@
 module Input exposing (..)
 
+import Char
 import Common exposing (..)
 
 
@@ -79,43 +80,31 @@ updateKeyUp model key =
         { model | currentInputs = newInputs }
 
 
-
--- http://keycode.info/
-
-
 inputFromKey : Int -> Input
 inputFromKey key =
-    case key of
-        -- w
-        87 ->
+    case Char.fromCode key of
+        'W' ->
             Move Up
 
-        -- d
-        68 ->
+        'D' ->
             Move Right
 
-        -- s
-        83 ->
+        'S' ->
             Move Down
 
-        -- a
-        65 ->
+        'A' ->
             Move Left
 
-        -- i
-        73 ->
+        'I' ->
             Fire Up
 
-        -- l
-        76 ->
+        'L' ->
             Fire Right
 
-        -- k
-        75 ->
+        'K' ->
             Fire Down
 
-        -- j
-        74 ->
+        'J' ->
             Fire Left
 
         _ ->
