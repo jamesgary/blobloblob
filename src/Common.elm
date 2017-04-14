@@ -20,6 +20,12 @@ type alias Model =
         , isFiringDown : Bool
         , isFiringLeft : Bool
         }
+    , spawns : List Spawn
+    }
+
+
+type alias Spawn =
+    { pos : ( Float, Float )
     }
 
 

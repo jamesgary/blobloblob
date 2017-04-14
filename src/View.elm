@@ -35,6 +35,7 @@ viewArena model =
             ]
             [ viewPlayer model
             , viewBullets model
+            , viewSpawns model
             ]
 
 
@@ -66,6 +67,26 @@ viewBullet bullet =
     in
         div
             [ class "bullet"
+            , style
+                [ ( "transform", translate x y )
+                ]
+            ]
+            []
+
+
+viewSpawns : Model -> Html Msg
+viewSpawns model =
+    div [ class "spawns" ] (List.map viewSpawn model.spawns)
+
+
+viewSpawn : Spawn -> Html Msg
+viewSpawn spawn =
+    let
+        ( x, y ) =
+            spawn.pos
+    in
+        div
+            [ class "spawn"
             , style
                 [ ( "transform", translate x y )
                 ]

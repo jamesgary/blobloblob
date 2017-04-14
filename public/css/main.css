@@ -45,3 +45,14 @@ html, body {
   border: 1px solid orange;
   border-radius: 100%;
 }
+
+.spawn {
+  width: 20px;
+  height: 20px;
+  background: #666;
+  position: absolute;
+  top: -11px;
+  left: -11px;
+  border: 2px solid black;
+  border-radius: 100%;
+}

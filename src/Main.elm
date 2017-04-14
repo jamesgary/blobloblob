@@ -48,6 +48,7 @@ init =
             , isFiringDown = False
             , isFiringLeft = False
             }
+      , spawns = [ { pos = ( 100, 100 ) } ]
       }
     , Cmd.none
     )
