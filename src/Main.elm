@@ -218,19 +218,18 @@ fromDirsGetAngle up right down left =
 moveBullets : Time.Time -> Model -> Model
 moveBullets time model =
     { model
-        | bullets = List.map (moveBullet time) model.bullets
+        | bullets = List.filterMap (moveBullet time model.arenaSize) model.bullets
     }
 
 
 bulletSpeed =
-    5.0
+    15.0
 
 
-moveBullet : Time.Time -> Bullet -> Bullet
-moveBullet time bullet =
+moveBullet : Time.Time -> ( Float, Float ) -> Bullet -> Maybe Bullet
+moveBullet time ( arenaWidth, arenaHeight ) bullet =
     let
         ( xDelta, yDelta ) =
-            --fromPolar ( bullet.angle, bulletSpeed )
             fromPolar ( bulletSpeed, bullet.angle )
 
         ( x, y ) =
@@ -242,9 +241,13 @@ moveBullet time bullet =
         newY =
             y + yDelta
     in
-        { bullet
-            | pos = ( newX, newY )
-        }
+        if (newX < 0 || newX > arenaWidth || newY < 0 || newY > arenaHeight) then
+            Nothing
+        else
+            Just
+                { bullet
+                    | pos = ( newX, newY )
+                }
 
 
 
