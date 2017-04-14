@@ -22,37 +22,29 @@ html, body {
 .arena {
   background: #ddd;
   position: relative;
+  overflow: hidden;
 }
 
 .player {
-  width: 50px;
-  height: 50px;
   background: pink;
   position: absolute;
-  top: -27px;
-  left: -27px;
-  border: 2px solid red;
+  border: 1px solid red;
   border-radius: 100%;
+  box-sizing: border-box;
 }
 
 .bullet {
-  width: 10px;
-  height: 10px;
   background: yellow;
   position: absolute;
-  top: -6px;
-  left: -6px;
   border: 1px solid orange;
   border-radius: 100%;
+  box-sizing: border-box;
 }
 
 .spawn {
-  width: 20px;
-  height: 20px;
   background: #666;
   position: absolute;
-  top: -11px;
-  left: -11px;
   border: 2px solid black;
   border-radius: 100%;
+  box-sizing: border-box;
 }

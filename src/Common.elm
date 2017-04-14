@@ -3,9 +3,28 @@ module Common exposing (..)
 import Time
 
 
+playerRad =
+    30
+
+
+bulletRad =
+    10
+
+
+spawnRad =
+    50
+
+
+bulletFireCooldown =
+    100
+
+
+bulletSpeed =
+    15.0
+
+
 type alias Model =
     { playerPos : ( Float, Float )
-    , playerRad : Float
     , vel : ( Float, Float )
     , arenaSize : ( Float, Float )
     , bullets : List Bullet

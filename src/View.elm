@@ -34,24 +34,46 @@ viewArena model =
                 ]
             ]
             [ viewPlayer model
-            , viewBullets model
             , viewSpawns model
+            , viewBullets model
             ]
 
 
 viewPlayer : Model -> Html Msg
 viewPlayer model =
+    viewObject "player" model.playerPos playerRad
+
+
+viewObject : String -> ( Float, Float ) -> Float -> Html Msg
+viewObject className pos rad =
     let
         ( x, y ) =
-            model.playerPos
+            adjustPos pos (-0.5 * rad)
     in
         div
-            [ class "player"
+            [ class className
             , style
                 [ ( "transform", translate x y )
+                , ( "width", px rad )
+                , ( "height", px rad )
                 ]
             ]
             []
+
+
+adjustPos : ( Float, Float ) -> Float -> ( Float, Float )
+adjustPos pos adj =
+    let
+        ( x, y ) =
+            pos
+
+        adjustedX =
+            x + adj
+
+        adjustedY =
+            y + adj
+    in
+        ( adjustedX, adjustedY )
 
 
 viewBullets : Model -> Html Msg
@@ -61,17 +83,7 @@ viewBullets model =
 
 viewBullet : Bullet -> Html Msg
 viewBullet bullet =
-    let
-        ( x, y ) =
-            bullet.pos
-    in
-        div
-            [ class "bullet"
-            , style
-                [ ( "transform", translate x y )
-                ]
-            ]
-            []
+    viewObject "bullet" bullet.pos bulletRad
 
 
 viewSpawns : Model -> Html Msg
@@ -81,17 +93,7 @@ viewSpawns model =
 
 viewSpawn : Spawn -> Html Msg
 viewSpawn spawn =
-    let
-        ( x, y ) =
-            spawn.pos
-    in
-        div
-            [ class "spawn"
-            , style
-                [ ( "transform", translate x y )
-                ]
-            ]
-            []
+    viewObject "spawn" spawn.pos spawnRad
 
 
 translate : Float -> Float -> String

@@ -33,7 +33,6 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { playerPos = ( 400, 225 )
-      , playerRad = 52
       , arenaSize = ( 800, 450 )
       , vel = ( 0, 0 )
       , fireCooldown = 0
@@ -124,7 +123,7 @@ movePlayer time model =
             model.arenaSize
 
         halfRad =
-            model.playerRad * 0.5
+            playerRad * 0.5
 
         clampedPos =
             ( (clamp halfRad (arenaWidth - halfRad) newPosX)
@@ -139,10 +138,6 @@ movePlayer time model =
             , vel = newVel
          }
         )
-
-
-bulletFireCooldown =
-    100
 
 
 fireBullets : Time.Time -> Model -> Model
@@ -221,10 +216,6 @@ moveBullets time model =
     { model
         | bullets = List.filterMap (moveBullet time model.arenaSize) model.bullets
     }
-
-
-bulletSpeed =
-    15.0
 
 
 moveBullet : Time.Time -> ( Float, Float ) -> Bullet -> Maybe Bullet
