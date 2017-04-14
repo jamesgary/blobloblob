@@ -179,7 +179,7 @@ fireBullets time model =
             }
 
 
-fromDirsGetAngle : Bool -> Bool -> Bool -> Bool -> Float
+fromDirsGetAngle : Bool -> Bool -> Bool -> Bool -> Angle
 fromDirsGetAngle up right down left =
     turns <|
         case ( up, right, down, left ) of
@@ -218,7 +218,7 @@ moveBullets time model =
     }
 
 
-moveBullet : Time.Time -> ( Float, Float ) -> Bullet -> Maybe Bullet
+moveBullet : Time.Time -> Pos -> Bullet -> Maybe Bullet
 moveBullet time ( arenaWidth, arenaHeight ) bullet =
     let
         ( xDelta, yDelta ) =

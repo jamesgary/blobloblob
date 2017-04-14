@@ -44,7 +44,7 @@ viewPlayer model =
     viewObject "player" model.playerPos playerRad
 
 
-viewObject : String -> ( Float, Float ) -> Float -> Html Msg
+viewObject : String -> Pos -> Float -> Html Msg
 viewObject className pos rad =
     let
         ( x, y ) =
@@ -61,7 +61,7 @@ viewObject className pos rad =
             []
 
 
-adjustPos : ( Float, Float ) -> Float -> ( Float, Float )
+adjustPos : Pos -> Float -> Pos
 adjustPos pos adj =
     let
         ( x, y ) =

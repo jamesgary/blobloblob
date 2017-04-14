@@ -24,7 +24,7 @@ bulletSpeed =
 
 
 type alias Model =
-    { playerPos : ( Float, Float )
+    { playerPos : Pos
     , vel : ( Float, Float )
     , arenaSize : ( Float, Float )
     , bullets : List Bullet
@@ -43,15 +43,23 @@ type alias Model =
     }
 
 
+type alias Pos =
+    ( Float, Float )
+
+
 type alias Spawn =
-    { pos : ( Float, Float )
+    { pos : Pos
     }
 
 
 type alias Bullet =
-    { pos : ( Float, Float )
-    , angle : Float
+    { pos : Pos
+    , angle : Angle
     }
+
+
+type alias Angle =
+    Float
 
 
 type Msg
