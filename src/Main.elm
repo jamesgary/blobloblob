@@ -47,7 +47,12 @@ init =
             , isFiringDown = False
             , isFiringLeft = False
             }
-      , spawns = [ { pos = ( 100, 100 ) } ]
+      , spawns =
+            [ { pos = ( 200, 200 ) }
+            , { pos = ( 100, 300 ) }
+            , { pos = ( 300, 200 ) }
+            , { pos = ( 600, 100 ) }
+            ]
       }
     , Cmd.none
     )
@@ -76,6 +81,83 @@ updateAnimFrame model time =
         |> movePlayer time
         |> fireBullets time
         |> moveBullets time
+        |> checkCollisions
+
+
+checkCollisions : Model -> Model
+checkCollisions model =
+    let
+        ( remainingSpawns, remainingBullets ) =
+            collideSpawnsAndBullets model.spawns model.bullets
+    in
+        { model
+            | spawns = remainingSpawns
+            , bullets = remainingBullets
+        }
+
+
+collideSpawnsAndBullets : List Spawn -> List Bullet -> ( List Spawn, List Bullet )
+collideSpawnsAndBullets spawns bullets =
+    case spawns of
+        spawn :: otherSpawns ->
+            let
+                ( maybeSpawn, remainingBullets ) =
+                    collideSpawnAndBullets spawn bullets
+
+                ( remainingS, remainingB ) =
+                    (collideSpawnsAndBullets otherSpawns remainingBullets)
+
+                actualRemainingS =
+                    case maybeSpawn of
+                        Just s ->
+                            s :: remainingS
+
+                        Nothing ->
+                            remainingS
+            in
+                ( actualRemainingS, remainingB )
+
+        [] ->
+            ( [], bullets )
+
+
+collideSpawnAndBullets : Spawn -> List Bullet -> ( Maybe Spawn, List Bullet )
+collideSpawnAndBullets spawn bullets =
+    case bullets of
+        bullet :: otherBullets ->
+            if collideSpawnAndBullet spawn bullet then
+                ( Nothing, otherBullets )
+            else
+                let
+                    ( s, remainingBullets ) =
+                        collideSpawnAndBullets spawn otherBullets
+                in
+                    ( s, bullet :: remainingBullets )
+
+        [] ->
+            ( Just spawn, [] )
+
+
+collideSpawnAndBullet : Spawn -> Bullet -> Bool
+collideSpawnAndBullet spawn bullet =
+    -- is a^2 + b^2 > (rad1 + rad2)^2?
+    let
+        ( spawnX, spawnY ) =
+            spawn.pos
+
+        ( bulletX, bulletY ) =
+            bullet.pos
+
+        a =
+            spawnX - bulletX
+
+        b =
+            spawnY - bulletY
+
+        c =
+            spawnRad + bulletRad
+    in
+        (a ^ 2) + (b ^ 2) < (c ^ 2)
 
 
 movePlayer : Time.Time -> Model -> Model
@@ -122,12 +204,9 @@ movePlayer time model =
         ( arenaWidth, arenaHeight ) =
             model.arenaSize
 
-        halfRad =
-            playerRad * 0.5
-
         clampedPos =
-            ( (clamp halfRad (arenaWidth - halfRad) newPosX)
-            , (clamp halfRad (arenaHeight - halfRad) newPosY)
+            ( (clamp playerRad (arenaWidth - playerRad) newPosX)
+            , (clamp playerRad (arenaHeight - playerRad) newPosY)
             )
 
         newVel =

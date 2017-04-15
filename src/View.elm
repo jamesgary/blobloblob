@@ -48,14 +48,14 @@ viewObject : String -> Pos -> Float -> Html Msg
 viewObject className pos rad =
     let
         ( x, y ) =
-            adjustPos pos (-0.5 * rad)
+            adjustPos pos (-1 * rad)
     in
         div
             [ class className
             , style
                 [ ( "transform", translate x y )
-                , ( "width", px rad )
-                , ( "height", px rad )
+                , ( "width", px (2 * rad) )
+                , ( "height", px (2 * rad) )
                 ]
             ]
             []
