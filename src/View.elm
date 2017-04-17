@@ -121,7 +121,7 @@ viewHealth : Float -> Html Msg
 viewHealth health =
     let
         perc =
-            1.1 - (health / spawnMaxHealth)
+            1.0 - (health / spawnMaxHealth)
 
         sda =
             (toString (50 * perc * pi)) ++ "% 9999%"
