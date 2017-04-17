@@ -49,6 +49,9 @@ init =
             }
       , spawns =
             [ { pos = ( 50, 50 ), health = spawnMaxHealth }
+            , { pos = ( 150, 50 ), health = spawnMaxHealth }
+            , { pos = ( 350, 50 ), health = spawnMaxHealth }
+            , { pos = ( 550, 50 ), health = spawnMaxHealth }
             , { pos = ( 750, 50 ), health = spawnMaxHealth }
             , { pos = ( 50, 400 ), health = spawnMaxHealth }
             , { pos = ( 750, 400 ), health = spawnMaxHealth }
@@ -87,55 +90,30 @@ updateAnimFrame model time =
 checkCollisions : Model -> Model
 checkCollisions model =
     let
-        ( remainingSpawns, remainingBullets ) =
-            collideSpawnsAndBullets model.spawns model.bullets
+        ( spawns, bullets ) =
+            List.foldr collideSpawnAndBullets ( [], model.bullets ) model.spawns
     in
         { model
-            | spawns = remainingSpawns
-            , bullets = remainingBullets
+            | spawns = spawns
+            , bullets = bullets
         }
 
 
-collideSpawnsAndBullets : List Spawn -> List Bullet -> ( List Spawn, List Bullet )
-collideSpawnsAndBullets spawns bullets =
-    case spawns of
-        spawn :: otherSpawns ->
-            let
-                ( maybeSpawn, remainingBullets ) =
-                    collideSpawnAndBullets spawn bullets
-
-                ( remainingS, remainingB ) =
-                    (collideSpawnsAndBullets otherSpawns remainingBullets)
-
-                actualRemainingS =
-                    case maybeSpawn of
-                        Just s ->
-                            s :: remainingS
-
-                        Nothing ->
-                            remainingS
-            in
-                ( actualRemainingS, remainingB )
-
-        [] ->
-            ( [], bullets )
-
-
-collideSpawnAndBullets : Spawn -> List Bullet -> ( Maybe Spawn, List Bullet )
-collideSpawnAndBullets spawn bullets =
+collideSpawnAndBullets : Spawn -> ( List Spawn, List Bullet ) -> ( List Spawn, List Bullet )
+collideSpawnAndBullets spawn ( aggregatedSpawns, bullets ) =
     case bullets of
         bullet :: otherBullets ->
             if collideSpawnAndBullet spawn bullet then
-                ( Nothing, otherBullets )
+                ( aggregatedSpawns, otherBullets )
             else
                 let
-                    ( s, remainingBullets ) =
-                        collideSpawnAndBullets spawn otherBullets
+                    ( newSpawns, newBullets ) =
+                        collideSpawnAndBullets spawn ( aggregatedSpawns, otherBullets )
                 in
-                    ( s, bullet :: remainingBullets )
+                    ( newSpawns, bullet :: newBullets )
 
         [] ->
-            ( Just spawn, [] )
+            ( spawn :: aggregatedSpawns, bullets )
 
 
 collideSpawnAndBullet : Spawn -> Bullet -> Bool
