@@ -85,6 +85,17 @@ updateAnimFrame model time =
         |> fireBullets time
         |> moveBullets time
         |> checkCollisions
+        |> removeDead
+
+
+removeDead : Model -> Model
+removeDead model =
+    { model | spawns = List.filter isAlive model.spawns }
+
+
+isAlive : Spawn -> Bool
+isAlive spawn =
+    spawn.health > 0
 
 
 checkCollisions : Model -> Model
@@ -104,7 +115,7 @@ collideSpawnAndBullets spawn ( aggregatedSpawns, bullets ) =
     case bullets of
         bullet :: otherBullets ->
             if collideSpawnAndBullet spawn bullet then
-                ( aggregatedSpawns, otherBullets )
+                ( { spawn | health = spawn.health - bulletDmg } :: aggregatedSpawns, otherBullets )
             else
                 let
                     ( newSpawns, newBullets ) =

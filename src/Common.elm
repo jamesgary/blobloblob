@@ -11,6 +11,10 @@ bulletRad =
     10
 
 
+bulletDmg =
+    5
+
+
 spawnRad =
     50
 
