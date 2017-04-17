@@ -41,10 +41,48 @@ html, body {
   box-sizing: border-box;
 }
 
+.spawn-container {
+  position: absolute;
+}
+
 .spawn {
   background: #666;
   position: absolute;
   border: 2px solid black;
   border-radius: 100%;
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.health-container {
+  border: 1px solid #330;
+  background: #2f2;
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
+  position: relative;
+}
+
+.health-bg,
+.health-dmg {
+  transform: rotate(-90deg);
+  transform-origin: center center;
+  position: absolute;
+  r: 25%;
+  cx: 50%;
+  cy: 50%;
+  fill: none;
+  stroke-width: 50%;
+}
+
+.health-bg {
+  stroke: #3b3;
+  stroke-dasharray: 100% 0;
+}
+
+.health-dmg {
+  stroke: #b33;
 }

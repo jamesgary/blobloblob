@@ -15,6 +15,10 @@ spawnRad =
     50
 
 
+spawnMaxHealth =
+    100
+
+
 bulletFireCooldown =
     100
 
@@ -49,6 +53,7 @@ type alias Pos =
 
 type alias Spawn =
     { pos : Pos
+    , health : Float
     }
 
 

@@ -3,6 +3,8 @@ module View exposing (view)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Svg exposing (svg, circle)
+import Svg.Attributes as SvgAttr
 import Keyboard
 import Json.Decode as Json
 
@@ -93,7 +95,45 @@ viewSpawns model =
 
 viewSpawn : Spawn -> Html Msg
 viewSpawn spawn =
-    viewObject "spawn" spawn.pos spawnRad
+    let
+        ( x, y ) =
+            spawn.pos
+    in
+        div
+            [ class "spawn-container"
+            , style
+                [ ( "transform", translate x y )
+                , ( "width", px (2 * spawnRad) )
+                , ( "height", px (2 * spawnRad) )
+                ]
+            ]
+            [ viewSpawnSprite
+            , viewHealth spawn.health
+            ]
+
+
+viewSpawnSprite : Html Msg
+viewSpawnSprite =
+    div [ class "spawn" ] []
+
+
+viewHealth : Float -> Html Msg
+viewHealth health =
+    let
+        perc =
+            1.1 - (health / spawnMaxHealth)
+
+        sda =
+            (toString (50 * perc * pi)) ++ "% 9999%"
+    in
+        svg [ SvgAttr.class "health-container" ]
+            [ circle [ SvgAttr.class "health-bg" ] []
+            , circle
+                [ SvgAttr.class "health-dmg"
+                , SvgAttr.strokeDasharray sda
+                ]
+                []
+            ]
 
 
 translate : Float -> Float -> String
@@ -104,3 +144,8 @@ translate x y =
 px : Float -> String
 px num =
     (toString num) ++ "px"
+
+
+toPerc : Float -> String
+toPerc num =
+    (toString num) ++ "%"

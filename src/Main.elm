@@ -48,10 +48,10 @@ init =
             , isFiringLeft = False
             }
       , spawns =
-            [ { pos = ( 200, 200 ) }
-            , { pos = ( 100, 300 ) }
-            , { pos = ( 300, 200 ) }
-            , { pos = ( 600, 100 ) }
+            [ { pos = ( 50, 50 ), health = spawnMaxHealth }
+            , { pos = ( 750, 50 ), health = spawnMaxHealth }
+            , { pos = ( 50, 400 ), health = spawnMaxHealth }
+            , { pos = ( 750, 400 ), health = spawnMaxHealth }
             ]
       }
     , Cmd.none
