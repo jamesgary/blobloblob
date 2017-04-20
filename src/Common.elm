@@ -23,6 +23,10 @@ spawnMaxHealth =
     100
 
 
+minionRad =
+    20
+
+
 bulletFireCooldown =
     100
 
@@ -48,6 +52,14 @@ type alias Model =
         , isFiringLeft : Bool
         }
     , spawns : List Spawn
+    , minions : List Minion
+    }
+
+
+type alias Minion =
+    { pos : Pos
+    , vel : ( Float, Float )
+    , rad : Float
     }
 
 
@@ -58,17 +70,24 @@ type alias Pos =
 type alias Spawn =
     { pos : Pos
     , health : Float
+    , rad : Float
     }
 
 
 type alias Bullet =
     { pos : Pos
     , angle : Angle
+    , rad : Float
+    , health : Float
     }
 
 
 type alias Angle =
     Float
+
+
+type alias Collidable a =
+    { a | pos : Pos, rad : Float, health : Float }
 
 
 type Msg

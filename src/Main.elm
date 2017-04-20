@@ -48,13 +48,19 @@ init =
             , isFiringLeft = False
             }
       , spawns =
-            [ { pos = ( 50, 50 ), health = spawnMaxHealth }
-            , { pos = ( 150, 50 ), health = spawnMaxHealth }
-            , { pos = ( 350, 50 ), health = spawnMaxHealth }
-            , { pos = ( 550, 50 ), health = spawnMaxHealth }
-            , { pos = ( 750, 50 ), health = spawnMaxHealth }
-            , { pos = ( 50, 400 ), health = spawnMaxHealth }
-            , { pos = ( 750, 400 ), health = spawnMaxHealth }
+            [ { pos = ( 50, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            , { pos = ( 150, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            , { pos = ( 350, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            , { pos = ( 550, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            , { pos = ( 750, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            , { pos = ( 50, 400 ), health = spawnMaxHealth, rad = spawnRad }
+            , { pos = ( 750, 400 ), health = spawnMaxHealth, rad = spawnRad }
+            ]
+      , minions =
+            [ { pos = ( 300, 200 )
+              , vel = ( 1, 2 )
+              , rad = minionRad
+              }
             ]
       }
     , Cmd.none
@@ -82,6 +88,7 @@ updateAnimFrame : Model -> Time.Time -> Model
 updateAnimFrame model time =
     model
         |> movePlayer time
+        |> moveMinions time
         |> fireBullets time
         |> moveBullets time
         |> checkCollisions
@@ -102,7 +109,10 @@ checkCollisions : Model -> Model
 checkCollisions model =
     let
         ( spawns, bullets ) =
-            List.foldr collideSpawnAndBullets ( [], model.bullets ) model.spawns
+            List.foldr collideObjWithObjs ( [], model.bullets ) model.spawns
+
+        --( minions, bullets2 ) =
+        --    List.foldr collideMinionAndBullets ( [], bullets ) model.minions
     in
         { model
             | spawns = spawns
@@ -110,41 +120,41 @@ checkCollisions model =
         }
 
 
-collideSpawnAndBullets : Spawn -> ( List Spawn, List Bullet ) -> ( List Spawn, List Bullet )
-collideSpawnAndBullets spawn ( aggregatedSpawns, bullets ) =
-    case bullets of
+collideObjWithObjs : Collidable a -> ( List (Collidable a), List (Collidable b) ) -> ( List (Collidable a), List (Collidable b) )
+collideObjWithObjs obj1 ( obj2s, obj1s ) =
+    case obj1s of
         bullet :: otherBullets ->
-            if collideSpawnAndBullet spawn bullet then
-                ( { spawn | health = spawn.health - bulletDmg } :: aggregatedSpawns, otherBullets )
+            if collideObjects obj1 bullet then
+                ( { obj1 | health = obj1.health - bulletDmg } :: obj2s, otherBullets )
             else
                 let
                     ( newSpawns, newBullets ) =
-                        collideSpawnAndBullets spawn ( aggregatedSpawns, otherBullets )
+                        collideObjWithObjs obj1 ( obj2s, otherBullets )
                 in
                     ( newSpawns, bullet :: newBullets )
 
         [] ->
-            ( spawn :: aggregatedSpawns, bullets )
+            ( obj1 :: obj2s, obj1s )
 
 
-collideSpawnAndBullet : Spawn -> Bullet -> Bool
-collideSpawnAndBullet spawn bullet =
+collideObjects : Collidable a -> Collidable b -> Bool
+collideObjects obj1 obj2 =
     -- is a^2 + b^2 > (rad1 + rad2)^2?
     let
-        ( spawnX, spawnY ) =
-            spawn.pos
+        ( x1, y1 ) =
+            obj1.pos
 
-        ( bulletX, bulletY ) =
-            bullet.pos
+        ( x2, y2 ) =
+            obj2.pos
 
         a =
-            spawnX - bulletX
+            x1 - x2
 
         b =
-            spawnY - bulletY
+            y1 - y2
 
         c =
-            spawnRad + bulletRad
+            obj1.rad + obj2.rad
     in
         (a ^ 2) + (b ^ 2) < (c ^ 2)
 
@@ -237,6 +247,8 @@ fireBullets time model =
                 , bullets =
                     ({ pos = model.playerPos
                      , angle = angle
+                     , rad = bulletRad
+                     , health = 1
                      }
                         :: model.bullets
                     )
@@ -279,6 +291,52 @@ fromDirsGetAngle up right down left =
                 0
 
 
+moveMinions : Time.Time -> Model -> Model
+moveMinions time model =
+    { model
+        | minions = List.map (moveMinion time model.arenaSize) model.minions
+    }
+
+
+moveMinion : Time.Time -> ( Float, Float ) -> Minion -> Minion
+moveMinion time ( arenaWidth, arenaHeight ) minion =
+    let
+        ( xDelta, yDelta ) =
+            minion.vel
+
+        ( x, y ) =
+            minion.pos
+
+        newX =
+            x + xDelta
+
+        newY =
+            y + yDelta
+
+        newXDelta =
+            if (newX < 0 || newX > arenaWidth) then
+                -1 * xDelta
+            else
+                xDelta
+
+        newYDelta =
+            if (newY < 0 || newY > arenaHeight) then
+                -1 * yDelta
+            else
+                yDelta
+
+        newX2 =
+            x + newXDelta
+
+        newY2 =
+            y + newYDelta
+    in
+        { minion
+            | pos = ( newX2, newY2 )
+            , vel = ( newXDelta, newYDelta )
+        }
+
+
 moveBullets : Time.Time -> Model -> Model
 moveBullets time model =
     { model
@@ -286,7 +344,7 @@ moveBullets time model =
     }
 
 
-moveBullet : Time.Time -> Pos -> Bullet -> Maybe Bullet
+moveBullet : Time.Time -> ( Float, Float ) -> Bullet -> Maybe Bullet
 moveBullet time ( arenaWidth, arenaHeight ) bullet =
     let
         ( xDelta, yDelta ) =

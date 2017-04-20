@@ -38,6 +38,7 @@ viewArena model =
             [ viewPlayer model
             , viewSpawns model
             , viewBullets model
+            , viewMinions model
             ]
 
 
@@ -76,6 +77,16 @@ adjustPos pos adj =
             y + adj
     in
         ( adjustedX, adjustedY )
+
+
+viewMinions : Model -> Html Msg
+viewMinions model =
+    div [ class "minions" ] (List.map viewMinion model.minions)
+
+
+viewMinion : Minion -> Html Msg
+viewMinion minion =
+    viewObject "minion" minion.pos minionRad
 
 
 viewBullets : Model -> Html Msg

@@ -41,6 +41,14 @@ html, body {
   box-sizing: border-box;
 }
 
+.minion {
+  background: purple;
+  position: absolute;
+  border: 1px solid black;
+  border-radius: 100%;
+  box-sizing: border-box;
+}
+
 .spawn-container {
   position: absolute;
 }
