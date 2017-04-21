@@ -7,6 +7,13 @@ playerRad =
     30
 
 
+conf =
+    { player =
+        { maxHealth = 1000
+        }
+    }
+
+
 bulletRad =
     10
 
@@ -67,6 +74,7 @@ type alias Model =
 type alias Player =
     { pos : Pos
     , vel : ( Float, Float )
+    , health : Float
     }
 
 

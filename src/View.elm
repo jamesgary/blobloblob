@@ -44,7 +44,26 @@ viewArena model =
 
 viewPlayer : Model -> Html Msg
 viewPlayer model =
-    viewObject "player" model.player.pos playerRad
+    let
+        ( x, y ) =
+            model.player.pos
+    in
+        div
+            [ class "player-container"
+            , style
+                [ ( "transform", translate x y )
+                , ( "width", px (2 * playerRad) )
+                , ( "height", px (2 * playerRad) )
+                ]
+            ]
+            [ viewPlayerSprite
+            , viewHealth model.player.health conf.player.maxHealth
+            ]
+
+
+viewPlayerSprite : Html Msg
+viewPlayerSprite =
+    div [ class "player" ] []
 
 
 viewObject : String -> Pos -> Float -> Html Msg

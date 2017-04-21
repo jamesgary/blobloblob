@@ -38,6 +38,7 @@ init =
     ( { player =
             { pos = ( 400, 225 )
             , vel = ( 0, 0 )
+            , health = 1000
             }
       , arenaSize = ( 800, 450 )
       , fireCooldown = 0
@@ -232,11 +233,14 @@ movePlayer time model =
             else
                 0
 
+        player =
+            model.player
+
         ( posX, posY ) =
-            model.player.pos
+            player.pos
 
         ( velX, velY ) =
-            model.player.vel
+            player.vel
 
         c =
             0.15
@@ -264,14 +268,14 @@ movePlayer time model =
 
         newVel =
             ( newVelX, newVelY )
-    in
-        ({ model
-            | player =
-                { pos = clampedPos
+
+        newPlayer =
+            { player
+                | pos = clampedPos
                 , vel = newVel
-                }
-         }
-        )
+            }
+    in
+        { model | player = newPlayer }
 
 
 fireBullets : Time.Time -> Model -> Model

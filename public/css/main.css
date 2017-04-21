@@ -25,12 +25,19 @@ html, body {
   overflow: hidden;
 }
 
+.player-container {
+  position: absolute;
+}
+
 .player {
   background: pink;
   position: absolute;
   border: 1px solid red;
   border-radius: 100%;
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  transform: translate(-50%, -50%);
 }
 
 .bullet {
