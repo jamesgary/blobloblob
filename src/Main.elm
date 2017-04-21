@@ -1,4 +1,4 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -15,6 +15,9 @@ import Time
 import Common exposing (..)
 import Input exposing (..)
 import View exposing (view)
+
+
+port raf : () -> Cmd msg
 
 
 main =
@@ -36,6 +39,7 @@ init =
       , arenaSize = ( 800, 450 )
       , vel = ( 0, 0 )
       , fireCooldown = 0
+      , spawnCooldown = 0
       , bullets = []
       , currentInputs =
             { isMovingUp = False
@@ -82,18 +86,49 @@ update msg model =
             ( (updateKeyUp model key), Cmd.none )
 
         AnimFrame time ->
-            ( (updateAnimFrame model time), Cmd.none )
+            ( (updateAnimFrame model time), raf () )
 
 
 updateAnimFrame : Model -> Time.Time -> Model
 updateAnimFrame model time =
     model
+        -- player stuff
         |> movePlayer time
+        -- minion stuff
+        |> spawnMinions time
         |> moveMinions time
+        -- bullet stuff
         |> fireBullets time
         |> moveBullets time
+        -- other
         |> checkCollisions
         |> removeDead
+
+
+spawnMinions : Time.Time -> Model -> Model
+spawnMinions time model =
+    let
+        currentCooldown =
+            model.spawnCooldown - time
+    in
+        if currentCooldown < 0 then
+            { model
+                | spawnCooldown = spawnMinionCooldown -- reset
+                , minions = List.append (List.map spawnMinion model.spawns) model.minions
+            }
+        else
+            { model
+                | spawnCooldown = currentCooldown
+            }
+
+
+spawnMinion : Spawn -> Minion
+spawnMinion spawn =
+    { pos = spawn.pos
+    , vel = ( 1, 2 )
+    , rad = minionRad
+    , health = minionMaxHealth
+    }
 
 
 removeDead : Model -> Model

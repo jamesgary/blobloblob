@@ -31,6 +31,10 @@ minionMaxHealth =
     20
 
 
+spawnMinionCooldown =
+    1000
+
+
 bulletFireCooldown =
     100
 
@@ -57,6 +61,7 @@ type alias Model =
         }
     , spawns : List Spawn
     , minions : List Minion
+    , spawnCooldown : Time.Time
     }
 
 

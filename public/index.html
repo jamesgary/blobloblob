@@ -8,10 +8,30 @@
   <div class="game-container" data-role="elm-container">
   </div>
 
+  <script src="https://cdn.rawgit.com/darsain/fpsmeter/master/dist/fpsmeter.min.js"></script>
   <script src="./js/main.js"></script>
   <script>
     var elmContainer = document.querySelector("[data-role=elm-container]");
     var app = Elm.Main.embed(elmContainer);
+
+    // see https://github.com/darsain/fpsmeter/wiki/Options#quick-reference
+    var meter = new FPSMeter({
+      smoothing: 10,      // Spike smoothing strength. 1 means no smoothing.
+      show:      'fps',   // Whether to show 'fps', or 'ms' = frame duration in milliseconds.
+      decimals:  0,       // Number of decimals in FPS number. 1 = 59.9, 2 = 59.94, ...
+      maxFps:    60,      // Max expected FPS value.
+
+      // Theme
+      theme: 'colorful', // Meter theme. Build in: 'dark', 'light', 'transparent', 'colorful'.
+      heat:  1,      // Allow themes to use coloring by FPS heat. 0 FPS = red, maxFps = green.
+
+      // Graph
+      graph:   1, // Whether to show history graph.
+      history: 100 // How many history states to show in a graph.
+    });
+    app.ports.raf.subscribe(function() {
+      meter.tick();
+    });
   </script>
 </body>
 </html>
