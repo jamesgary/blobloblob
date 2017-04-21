@@ -60,6 +60,7 @@ type alias Minion =
     { pos : Pos
     , vel : ( Float, Float )
     , rad : Float
+    , health : Float
     }
 
 

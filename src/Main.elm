@@ -60,6 +60,7 @@ init =
             [ { pos = ( 300, 200 )
               , vel = ( 1, 2 )
               , rad = minionRad
+              , health = 1
               }
             ]
       }
@@ -97,10 +98,13 @@ updateAnimFrame model time =
 
 removeDead : Model -> Model
 removeDead model =
-    { model | spawns = List.filter isAlive model.spawns }
+    { model
+        | spawns = List.filter isAlive model.spawns
+        , minions = List.filter isAlive model.minions
+    }
 
 
-isAlive : Spawn -> Bool
+isAlive : Collidable a -> Bool
 isAlive spawn =
     spawn.health > 0
 
@@ -111,27 +115,31 @@ checkCollisions model =
         ( spawns, bullets ) =
             List.foldr collideObjWithObjs ( [], model.bullets ) model.spawns
 
-        --( minions, bullets2 ) =
-        --    List.foldr collideMinionAndBullets ( [], bullets ) model.minions
+        ( minions, bullets2 ) =
+            List.foldr collideObjWithObjs ( [], bullets ) model.minions
     in
         { model
             | spawns = spawns
-            , bullets = bullets
+            , minions = minions
+            , bullets = bullets2
         }
 
 
-collideObjWithObjs : Collidable a -> ( List (Collidable a), List (Collidable b) ) -> ( List (Collidable a), List (Collidable b) )
+collideObjWithObjs :
+    Collidable a
+    -> ( List (Collidable a), List (Collidable b) )
+    -> ( List (Collidable a), List (Collidable b) )
 collideObjWithObjs obj1 ( obj2s, obj1s ) =
     case obj1s of
-        bullet :: otherBullets ->
-            if collideObjects obj1 bullet then
-                ( { obj1 | health = obj1.health - bulletDmg } :: obj2s, otherBullets )
+        obj :: otherObjs ->
+            if collideObjects obj1 obj then
+                ( { obj1 | health = obj1.health - bulletDmg } :: obj2s, otherObjs )
             else
                 let
                     ( newSpawns, newBullets ) =
-                        collideObjWithObjs obj1 ( obj2s, otherBullets )
+                        collideObjWithObjs obj1 ( obj2s, otherObjs )
                 in
-                    ( newSpawns, bullet :: newBullets )
+                    ( newSpawns, obj :: newBullets )
 
         [] ->
             ( obj1 :: obj2s, obj1s )
