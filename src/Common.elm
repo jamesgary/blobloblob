@@ -51,6 +51,7 @@ type alias Player =
     { pos : Pos
     , vel : ( Float, Float )
     , health : Float
+    , rad : Float
     }
 
 

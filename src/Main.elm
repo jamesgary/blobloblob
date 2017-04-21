@@ -39,6 +39,7 @@ init =
             { pos = ( 400, 225 )
             , vel = ( 0, 0 )
             , health = 1000
+            , rad = conf.player.rad
             }
       , arenaSize = ( 800, 450 )
       , fireCooldown = 0
@@ -56,12 +57,11 @@ init =
             }
       , spawns =
             [ { pos = ( 50, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-
-            --j, { pos = ( 150, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            --j, { pos = ( 350, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            --j, { pos = ( 550, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            --j, { pos = ( 750, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            --j, { pos = ( 50, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 150, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 350, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 550, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 750, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 50, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             , { pos = ( 750, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             ]
       , minions =
@@ -164,12 +164,27 @@ checkCollisions model =
             | spawns = spawns
             , minions = minions2
             , bullets = bullets2
+            , player = player
         }
 
 
 collidePlayerWithMinions : Player -> List Minion -> ( Player, List Minion )
 collidePlayerWithMinions player minions =
-    ( player, minions )
+    let
+        uncollidedMinions =
+            List.filterMap
+                (\m ->
+                    if collideObjects player m then
+                        Nothing
+                    else
+                        Just m
+                )
+                minions
+
+        amtDmg =
+            100.0 * toFloat ((List.length minions) - (List.length uncollidedMinions))
+    in
+        ( { player | health = player.health - amtDmg }, uncollidedMinions )
 
 
 collideObjWithObjs :
