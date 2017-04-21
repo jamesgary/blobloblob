@@ -44,7 +44,7 @@ viewArena model =
 
 viewPlayer : Model -> Html Msg
 viewPlayer model =
-    viewObject "player" model.playerPos playerRad
+    viewObject "player" model.player.pos playerRad
 
 
 viewObject : String -> Pos -> Float -> Html Msg

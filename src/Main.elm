@@ -35,9 +35,11 @@ main =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { playerPos = ( 400, 225 )
+    ( { player =
+            { pos = ( 400, 225 )
+            , vel = ( 0, 0 )
+            }
       , arenaSize = ( 800, 450 )
-      , vel = ( 0, 0 )
       , fireCooldown = 0
       , spawnCooldown = 0
       , bullets = []
@@ -53,11 +55,12 @@ init =
             }
       , spawns =
             [ { pos = ( 50, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            , { pos = ( 150, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            , { pos = ( 350, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            , { pos = ( 550, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            , { pos = ( 750, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            , { pos = ( 50, 400 ), health = spawnMaxHealth, rad = spawnRad }
+
+            --j, { pos = ( 150, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            --j, { pos = ( 350, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            --j, { pos = ( 550, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            --j, { pos = ( 750, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            --j, { pos = ( 50, 400 ), health = spawnMaxHealth, rad = spawnRad }
             , { pos = ( 750, 400 ), health = spawnMaxHealth, rad = spawnRad }
             ]
       , minions =
@@ -152,12 +155,20 @@ checkCollisions model =
 
         ( minions, bullets2 ) =
             List.foldr collideObjWithObjs ( [], bullets ) model.minions
+
+        ( player, minions2 ) =
+            collidePlayerWithMinions model.player minions
     in
         { model
             | spawns = spawns
-            , minions = minions
+            , minions = minions2
             , bullets = bullets2
         }
+
+
+collidePlayerWithMinions : Player -> List Minion -> ( Player, List Minion )
+collidePlayerWithMinions player minions =
+    ( player, minions )
 
 
 collideObjWithObjs :
@@ -222,10 +233,10 @@ movePlayer time model =
                 0
 
         ( posX, posY ) =
-            model.playerPos
+            model.player.pos
 
         ( velX, velY ) =
-            model.vel
+            model.player.vel
 
         c =
             0.15
@@ -255,8 +266,10 @@ movePlayer time model =
             ( newVelX, newVelY )
     in
         ({ model
-            | playerPos = clampedPos
-            , vel = newVel
+            | player =
+                { pos = clampedPos
+                , vel = newVel
+                }
          }
         )
 
@@ -288,7 +301,7 @@ fireBullets time model =
             { model
                 | fireCooldown = bulletFireCooldown
                 , bullets =
-                    ({ pos = model.playerPos
+                    ({ pos = model.player.pos
                      , angle = angle
                      , rad = bulletRad
                      , health = 1

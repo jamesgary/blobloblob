@@ -32,7 +32,7 @@ minionMaxHealth =
 
 
 spawnMinionCooldown =
-    1000
+    10000
 
 
 bulletFireCooldown =
@@ -44,8 +44,7 @@ bulletSpeed =
 
 
 type alias Model =
-    { playerPos : Pos
-    , vel : ( Float, Float )
+    { player : Player
     , arenaSize : ( Float, Float )
     , bullets : List Bullet
     , fireCooldown : Time.Time
@@ -62,6 +61,12 @@ type alias Model =
     , spawns : List Spawn
     , minions : List Minion
     , spawnCooldown : Time.Time
+    }
+
+
+type alias Player =
+    { pos : Pos
+    , vel : ( Float, Float )
     }
 
 
