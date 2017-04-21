@@ -3,51 +3,27 @@ module Common exposing (..)
 import Time
 
 
-playerRad =
-    30
-
-
 conf =
     { player =
         { maxHealth = 1000
+        , rad = 30
+        , fireCooldown = 100
+        }
+    , bullet =
+        { dmg = 5
+        , rad = 10
+        , speed = 15
+        }
+    , spawn =
+        { rad = 50
+        , maxHealth = 100
+        , cooldown = 10000
+        }
+    , minion =
+        { rad = 20
+        , maxHealth = 20
         }
     }
-
-
-bulletRad =
-    10
-
-
-bulletDmg =
-    5
-
-
-spawnRad =
-    50
-
-
-spawnMaxHealth =
-    100
-
-
-minionRad =
-    20
-
-
-minionMaxHealth =
-    20
-
-
-spawnMinionCooldown =
-    10000
-
-
-bulletFireCooldown =
-    100
-
-
-bulletSpeed =
-    15.0
 
 
 type alias Model =

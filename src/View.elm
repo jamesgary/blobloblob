@@ -45,6 +45,9 @@ viewArena model =
 viewPlayer : Model -> Html Msg
 viewPlayer model =
     let
+        rad =
+            conf.player.rad
+
         ( x, y ) =
             model.player.pos
     in
@@ -52,8 +55,8 @@ viewPlayer model =
             [ class "player-container"
             , style
                 [ ( "transform", translate x y )
-                , ( "width", px (2 * playerRad) )
-                , ( "height", px (2 * playerRad) )
+                , ( "width", px (2 * rad) )
+                , ( "height", px (2 * rad) )
                 ]
             ]
             [ viewPlayerSprite
@@ -113,12 +116,12 @@ viewMinion minion =
             [ class "minion-container"
             , style
                 [ ( "transform", translate x y )
-                , ( "width", px (2 * minionRad) )
-                , ( "height", px (2 * minionRad) )
+                , ( "width", px (2 * conf.minion.rad) )
+                , ( "height", px (2 * conf.minion.rad) )
                 ]
             ]
             [ viewMinionSprite
-            , viewHealth minion.health minionMaxHealth
+            , viewHealth minion.health conf.minion.maxHealth
             ]
 
 
@@ -134,7 +137,7 @@ viewBullets model =
 
 viewBullet : Bullet -> Html Msg
 viewBullet bullet =
-    viewObject "bullet" bullet.pos bulletRad
+    viewObject "bullet" bullet.pos conf.bullet.rad
 
 
 viewSpawns : Model -> Html Msg
@@ -152,12 +155,12 @@ viewSpawn spawn =
             [ class "spawn-container"
             , style
                 [ ( "transform", translate x y )
-                , ( "width", px (2 * spawnRad) )
-                , ( "height", px (2 * spawnRad) )
+                , ( "width", px (2 * conf.spawn.rad) )
+                , ( "height", px (2 * conf.spawn.rad) )
                 ]
             ]
             [ viewSpawnSprite
-            , viewHealth spawn.health spawnMaxHealth
+            , viewHealth spawn.health conf.spawn.maxHealth
             ]
 
 

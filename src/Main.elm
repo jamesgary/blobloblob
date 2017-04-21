@@ -55,20 +55,20 @@ init =
             , isFiringLeft = False
             }
       , spawns =
-            [ { pos = ( 50, 50 ), health = spawnMaxHealth, rad = spawnRad }
+            [ { pos = ( 50, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
 
-            --j, { pos = ( 150, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            --j, { pos = ( 350, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            --j, { pos = ( 550, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            --j, { pos = ( 750, 50 ), health = spawnMaxHealth, rad = spawnRad }
-            --j, { pos = ( 50, 400 ), health = spawnMaxHealth, rad = spawnRad }
-            , { pos = ( 750, 400 ), health = spawnMaxHealth, rad = spawnRad }
+            --j, { pos = ( 150, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            --j, { pos = ( 350, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            --j, { pos = ( 550, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            --j, { pos = ( 750, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            --j, { pos = ( 50, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 750, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             ]
       , minions =
             [ { pos = ( 300, 200 )
               , vel = ( 1, 2 )
-              , rad = minionRad
-              , health = minionMaxHealth
+              , rad = conf.minion.rad
+              , health = conf.minion.maxHealth
               }
             ]
       }
@@ -117,7 +117,7 @@ spawnMinions time model =
     in
         if currentCooldown < 0 then
             { model
-                | spawnCooldown = spawnMinionCooldown -- reset
+                | spawnCooldown = conf.spawn.cooldown -- reset
                 , minions = List.append (List.map spawnMinion model.spawns) model.minions
             }
         else
@@ -130,8 +130,8 @@ spawnMinion : Spawn -> Minion
 spawnMinion spawn =
     { pos = spawn.pos
     , vel = ( 1, 2 )
-    , rad = minionRad
-    , health = minionMaxHealth
+    , rad = conf.minion.rad
+    , health = conf.minion.maxHealth
     }
 
 
@@ -180,7 +180,7 @@ collideObjWithObjs obj1 ( obj2s, obj1s ) =
     case obj1s of
         obj :: otherObjs ->
             if collideObjects obj1 obj then
-                ( { obj1 | health = obj1.health - bulletDmg } :: obj2s, otherObjs )
+                ( { obj1 | health = obj1.health - conf.bullet.dmg } :: obj2s, otherObjs )
             else
                 let
                     ( newSpawns, newBullets ) =
@@ -262,8 +262,8 @@ movePlayer time model =
             model.arenaSize
 
         clampedPos =
-            ( (clamp playerRad (arenaWidth - playerRad) newPosX)
-            , (clamp playerRad (arenaHeight - playerRad) newPosY)
+            ( (clamp conf.player.rad (arenaWidth - conf.player.rad) newPosX)
+            , (clamp conf.player.rad (arenaHeight - conf.player.rad) newPosY)
             )
 
         newVel =
@@ -303,11 +303,11 @@ fireBullets time model =
     in
         if shouldFire then
             { model
-                | fireCooldown = bulletFireCooldown
+                | fireCooldown = conf.player.fireCooldown
                 , bullets =
                     ({ pos = model.player.pos
                      , angle = angle
-                     , rad = bulletRad
+                     , rad = conf.bullet.rad
                      , health = 1
                      }
                         :: model.bullets
@@ -408,7 +408,7 @@ moveBullet : Time.Time -> ( Float, Float ) -> Bullet -> Maybe Bullet
 moveBullet time ( arenaWidth, arenaHeight ) bullet =
     let
         ( xDelta, yDelta ) =
-            fromPolar ( bulletSpeed, bullet.angle )
+            fromPolar ( conf.bullet.speed, bullet.angle )
 
         ( x, y ) =
             bullet.pos
