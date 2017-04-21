@@ -60,7 +60,7 @@ init =
             [ { pos = ( 300, 200 )
               , vel = ( 1, 2 )
               , rad = minionRad
-              , health = 1
+              , health = minionMaxHealth
               }
             ]
       }

@@ -86,7 +86,26 @@ viewMinions model =
 
 viewMinion : Minion -> Html Msg
 viewMinion minion =
-    viewObject "minion" minion.pos minionRad
+    let
+        ( x, y ) =
+            minion.pos
+    in
+        div
+            [ class "minion-container"
+            , style
+                [ ( "transform", translate x y )
+                , ( "width", px (2 * minionRad) )
+                , ( "height", px (2 * minionRad) )
+                ]
+            ]
+            [ viewMinionSprite
+            , viewHealth minion.health minionMaxHealth
+            ]
+
+
+viewMinionSprite : Html Msg
+viewMinionSprite =
+    div [ class "minion" ] []
 
 
 viewBullets : Model -> Html Msg
@@ -119,7 +138,7 @@ viewSpawn spawn =
                 ]
             ]
             [ viewSpawnSprite
-            , viewHealth spawn.health
+            , viewHealth spawn.health spawnMaxHealth
             ]
 
 
@@ -128,11 +147,11 @@ viewSpawnSprite =
     div [ class "spawn" ] []
 
 
-viewHealth : Float -> Html Msg
-viewHealth health =
+viewHealth : Float -> Float -> Html Msg
+viewHealth health max =
     let
         perc =
-            1.0 - (health / spawnMaxHealth)
+            1.0 - (health / max)
 
         sda =
             (toString (50 * perc * pi)) ++ "% 9999%"

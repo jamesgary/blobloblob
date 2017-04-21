@@ -27,6 +27,10 @@ minionRad =
     20
 
 
+minionMaxHealth =
+    20
+
+
 bulletFireCooldown =
     100
 
