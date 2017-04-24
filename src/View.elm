@@ -39,6 +39,17 @@ viewArena model =
             , viewSpawns model
             , viewBullets model
             , viewMinions model
+            , viewGameOver model
+            ]
+
+
+viewGameOver : Model -> Html Msg
+viewGameOver model =
+    if model.player.health > 0 then
+        div [] []
+    else
+        div [ class "game-over" ]
+            [ h1 [] [ text "Game Over!" ]
             ]
 
 

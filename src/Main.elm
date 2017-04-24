@@ -95,18 +95,21 @@ update msg model =
 
 updateAnimFrame : Model -> Time.Time -> Model
 updateAnimFrame model time =
-    model
-        -- player stuff
-        |> movePlayer time
-        -- minion stuff
-        |> spawnMinions time
-        |> moveMinions time
-        -- bullet stuff
-        |> fireBullets time
-        |> moveBullets time
-        -- other
-        |> checkCollisions
-        |> removeDead
+    if model.player.health > 0 then
+        model
+            -- player stuff
+            |> movePlayer time
+            -- minion stuff
+            |> spawnMinions time
+            |> moveMinions time
+            -- bullet stuff
+            |> fireBullets time
+            |> moveBullets time
+            -- other
+            |> checkCollisions
+            |> removeDead
+    else
+        model
 
 
 spawnMinions : Time.Time -> Model -> Model

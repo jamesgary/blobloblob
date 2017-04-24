@@ -17,7 +17,7 @@ conf =
     , spawn =
         { rad = 50
         , maxHealth = 100
-        , cooldown = 10000
+        , cooldown = 1000
         }
     , minion =
         { rad = 20
