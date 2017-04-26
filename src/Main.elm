@@ -71,6 +71,7 @@ init =
               , health = conf.minion.maxHealth
               }
             ]
+      , effects = []
       }
     , Cmd.none
     )
@@ -107,9 +108,29 @@ updateAnimFrame model time =
             |> moveBullets time
             -- other
             |> checkCollisions
+            |> ageEffects time
             |> removeDead
     else
         model
+
+
+ageEffects : Time.Time -> Model -> Model
+ageEffects time model =
+    { model
+        | effects = List.filterMap (ageEffect time) model.effects
+    }
+
+
+ageEffect : Time.Time -> Effect -> Maybe Effect
+ageEffect time effect =
+    let
+        newAge =
+            effect.age + time
+    in
+        if newAge > conf.effects.maxAge then
+            Nothing
+        else
+            Just { effect | age = effect.age + time }
 
 
 spawnMinions : Time.Time -> Model -> Model
@@ -160,7 +181,7 @@ checkCollisions model =
         ( minions, bullets2 ) =
             List.foldr collideObjWithObjs ( [], bullets ) model.minions
 
-        ( player, minions2 ) =
+        ( player, minions2, effects ) =
             collidePlayerWithMinions model.player minions
     in
         { model
@@ -168,26 +189,30 @@ checkCollisions model =
             , minions = minions2
             , bullets = bullets2
             , player = player
+            , effects = List.append model.effects effects
         }
 
 
-collidePlayerWithMinions : Player -> List Minion -> ( Player, List Minion )
+effectFromCollidable : Collidable a -> Effect
+effectFromCollidable collidable =
+    { pos = collidable.pos
+    , age = 0
+    }
+
+
+collidePlayerWithMinions : Player -> List Minion -> ( Player, List Minion, List Effect )
 collidePlayerWithMinions player minions =
     let
-        uncollidedMinions =
-            List.filterMap
-                (\m ->
-                    if collideObjects player m then
-                        Nothing
-                    else
-                        Just m
-                )
-                minions
+        ( collidedMinions, uncollidedMinions ) =
+            List.partition (collideObjects player) minions
 
         amtDmg =
-            100.0 * toFloat ((List.length minions) - (List.length uncollidedMinions))
+            100.0 * toFloat (List.length collidedMinions)
     in
-        ( { player | health = player.health - amtDmg }, uncollidedMinions )
+        ( { player | health = player.health - amtDmg }
+        , uncollidedMinions
+        , List.map effectFromCollidable collidedMinions
+        )
 
 
 collideObjWithObjs :

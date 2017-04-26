@@ -69,8 +69,42 @@ viewArena model =
                 , viewSpawns model
                 , viewBullets model
                 , viewMinions model
+                , viewEffects model
                 ]
             , viewGameOver model
+            ]
+
+
+viewEffects : Model -> Html Msg
+viewEffects model =
+    div [ class "effects" ] (List.map viewEffect model.effects)
+
+
+viewEffect : Effect -> Html Msg
+viewEffect effect =
+    let
+        ( x, y ) =
+            effect.pos
+
+        percAged =
+            effect.age / conf.effects.maxAge
+
+        opacity =
+            toString (1 - percAged)
+
+        rad =
+            conf.effects.rad * ((1 + percAged) * 1.5)
+    in
+        div
+            [ class "effect-container"
+            , style
+                [ ( "transform", translate x y )
+                , ( "width", px (2 * rad) )
+                , ( "height", px (2 * rad) )
+                , ( "opacity", opacity )
+                ]
+            ]
+            [ div [ class "effect" ] []
             ]
 
 

@@ -69,14 +69,16 @@ html, body {
 
 .player-container,
 .minion-container,
-.spawn-container {
+.spawn-container,
+.effect-container {
   position: absolute;
 }
 
 .player,
 .bullet,
 .spawn,
-.minion {
+.minion,
+.effect {
   position: absolute;
   border-radius: 100%;
   box-sizing: border-box;
@@ -116,6 +118,22 @@ html, body {
 
 .health-dmg {
   stroke: #b33;
+}
+
+/* effects */
+
+.effects {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.effect {
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 100%;
+  position: absolute;
 }
 
 /* game over screen */

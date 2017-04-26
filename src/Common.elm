@@ -25,6 +25,10 @@ conf =
         { rad = 10
         , maxHealth = 10
         }
+    , effects =
+        { maxAge = 300
+        , rad = 10
+        }
     }
 
 
@@ -46,6 +50,13 @@ type alias Model =
     , spawns : List Spawn
     , minions : List Minion
     , spawnCooldown : Time.Time
+    , effects : List Effect
+    }
+
+
+type alias Effect =
+    { pos : Pos
+    , age : Time.Time
     }
 
 
