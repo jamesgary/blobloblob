@@ -14,6 +14,10 @@ import Json.Decode as Json
 import Common exposing (..)
 
 
+cameraZoom =
+    2
+
+
 view : Model -> Html Msg
 view model =
     div
@@ -27,6 +31,24 @@ viewArena model =
     let
         ( width, height ) =
             model.arenaSize
+
+        ( playerX, playerY ) =
+            model.player.pos
+
+        -- centered
+        --( cameraOriginX, cameraOriginY ) =
+        --    ( ((playerX * 2) - (width / 2))
+        --    , ((playerY * 2) - (height / 2))
+        --    )
+        -- starts centered, but butts up against wall
+        --( cameraOriginX, cameraOriginY ) =
+        --    ( playerX
+        --    , playerY
+        --    )
+        ( cameraOriginX, cameraOriginY ) =
+            ( (((playerX * 2) - (width / 2)) + playerX) / 2
+            , (((playerY * 2) - (height / 2)) + playerY) / 2
+            )
     in
         div
             [ class "arena"
@@ -35,12 +57,31 @@ viewArena model =
                 , ( "height", px height )
                 ]
             ]
-            [ viewPlayer model
-            , viewSpawns model
-            , viewBullets model
-            , viewMinions model
+            [ div
+                [ class "camera"
+                , style
+                    [ ( "transform", scale cameraZoom )
+                    , ( "transform-origin", (px cameraOriginX) ++ " " ++ (px cameraOriginY) )
+                    ]
+                ]
+                [ viewBackground
+                , viewPlayer model
+                , viewSpawns model
+                , viewBullets model
+                , viewMinions model
+                ]
             , viewGameOver model
             ]
+
+
+viewBackground : Html Msg
+viewBackground =
+    div [ class "background" ] []
+
+
+scale : Int -> String
+scale zoom =
+    "scale(" ++ (toString zoom) ++ ")"
 
 
 viewGameOver : Model -> Html Msg

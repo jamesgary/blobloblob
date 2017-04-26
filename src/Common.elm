@@ -6,21 +6,21 @@ import Time
 conf =
     { player =
         { maxHealth = 1000
-        , rad = 30
+        , rad = 10
         , fireCooldown = 100
         }
     , bullet =
         { dmg = 5
-        , rad = 10
+        , rad = 3
         , speed = 15
         }
     , spawn =
-        { rad = 50
+        { rad = 30
         , maxHealth = 100
         , cooldown = 1000
         }
     , minion =
-        { rad = 20
+        { rad = 10
         , maxHealth = 20
         }
     }
