@@ -260,20 +260,14 @@ movePlayer time model =
         ( velX, velY ) =
             player.vel
 
-        c =
-            0.15
-
-        friction =
-            0.8
-
         ( newVelX, newVelY ) =
-            ( ((velX + (xDir * c)) * friction)
-            , ((velY + (yDir * c)) * friction)
+            ( ((velX + (xDir * conf.player.speed)) * conf.player.friction)
+            , ((velY + (yDir * conf.player.speed)) * conf.player.friction)
             )
 
         ( newPosX, newPosY ) =
-            ( ((time * newVelX * friction) + posX)
-            , ((time * newVelY * friction) + posY)
+            ( ((time * newVelX * conf.player.friction) + posX)
+            , ((time * newVelY * conf.player.friction) + posY)
             )
 
         ( arenaWidth, arenaHeight ) =

@@ -8,6 +8,8 @@ conf =
         { maxHealth = 1000
         , rad = 10
         , fireCooldown = 100
+        , speed = 0.1
+        , friction = 0.77
         }
     , bullet =
         { dmg = 5
@@ -21,7 +23,7 @@ conf =
         }
     , minion =
         { rad = 10
-        , maxHealth = 20
+        , maxHealth = 10
         }
     }
 
