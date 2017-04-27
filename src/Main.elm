@@ -175,17 +175,19 @@ isAlive spawn =
 checkCollisions : Model -> Model
 checkCollisions model =
     let
-        ( spawns, bullets ) =
-            List.foldr collideObjWithObjs ( [], model.bullets ) model.spawns
+        --( spawns, bullets ) =
+        --    List.foldr collideObjWithObjs ( [], model.bullets ) model.spawns
+        ( spawns, bullets, effects ) =
+            collideSpawnsWithBullets model.spawns model.bullets
 
-        ( minions, bullets2, effects ) =
+        ( minions, bullets2, effects2 ) =
             collideMinionsWithBullets model.minions bullets
 
-        ( player, minions2, effects2 ) =
+        ( player, minions2, effects3 ) =
             collidePlayerWithMinions model.player minions
 
         combinedEffects =
-            List.append effects effects2
+            List.append effects (List.append effects2 effects3)
     in
         { model
             | spawns = spawns
@@ -194,6 +196,60 @@ checkCollisions model =
             , player = player
             , effects = List.append model.effects combinedEffects
         }
+
+
+collideSpawnsWithBullets : List Spawn -> List Bullet -> ( List Spawn, List Bullet, List Effect )
+collideSpawnsWithBullets spawns bullets =
+    case spawns of
+        spawn :: otherSpawns ->
+            let
+                ( maybeSpawn, unhitBullets, effects ) =
+                    collideSpawnWithBullets spawn bullets
+
+                ( newSpawns, unhitBullets2, effects2 ) =
+                    collideSpawnsWithBullets otherSpawns unhitBullets
+            in
+                case maybeSpawn of
+                    Just damagedSpawn ->
+                        ( damagedSpawn :: newSpawns, unhitBullets2, List.append effects effects2 )
+
+                    Nothing ->
+                        ( newSpawns, unhitBullets2, List.append effects effects2 )
+
+        [] ->
+            ( [], bullets, [] )
+
+
+collideSpawnWithBullets : Spawn -> List Bullet -> ( Maybe Spawn, List Bullet, List Effect )
+collideSpawnWithBullets spawn bullets =
+    case bullets of
+        bullet :: otherBullets ->
+            if collideObjects spawn bullet then
+                let
+                    damagedSpawn =
+                        { spawn | health = spawn.health - conf.bullet.dmg }
+
+                    effect =
+                        effectFromCollidable BulletHit bullet
+                in
+                    if damagedSpawn.health > 0.0 then
+                        let
+                            ( maybeSpawn, unhitBullets, effects ) =
+                                collideSpawnWithBullets damagedSpawn otherBullets
+                        in
+                            ( maybeSpawn, unhitBullets, effect :: effects )
+                    else
+                        -- he's dead, jim
+                        ( Nothing, otherBullets, [ effect, effectFromCollidable SpawnDeath damagedSpawn ] )
+            else
+                let
+                    ( maybeSpawn, unhitBullets, effects ) =
+                        collideSpawnWithBullets spawn otherBullets
+                in
+                    ( maybeSpawn, bullet :: unhitBullets, effects )
+
+        [] ->
+            ( Just spawn, [], [] )
 
 
 collideMinionsWithBullets : List Minion -> List Bullet -> ( List Minion, List Bullet, List Effect )

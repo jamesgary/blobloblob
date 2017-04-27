@@ -64,6 +64,7 @@ type alias Effect =
 type EffectType
     = BulletHit
     | MinionDeath
+    | SpawnDeath
 
 
 type alias Player =

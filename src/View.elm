@@ -102,6 +102,9 @@ viewEffect effect =
 
                 MinionDeath ->
                     "effect minion-death"
+
+                SpawnDeath ->
+                    "effect spawn-death"
     in
         div
             [ class "effect-container"

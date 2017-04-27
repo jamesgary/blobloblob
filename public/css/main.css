@@ -146,6 +146,12 @@ html, body {
   background: rgba(200, 0, 255, 0.9);
 }
 
+.effect.spawn-death {
+  height: 200%;
+  width: 200%;
+  background: rgba(255, 255, 255, 0.9);
+}
+
 /* game over screen */
 
 .game-over {
