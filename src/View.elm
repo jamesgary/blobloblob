@@ -94,6 +94,14 @@ viewEffect effect =
 
         rad =
             conf.effects.rad * ((1 + percAged) * 1.5)
+
+        effectClass =
+            case effect.type_ of
+                BulletHit ->
+                    "effect bullet-hit"
+
+                MinionDeath ->
+                    "effect minion-death"
     in
         div
             [ class "effect-container"
@@ -104,7 +112,7 @@ viewEffect effect =
                 , ( "opacity", opacity )
                 ]
             ]
-            [ div [ class "effect" ] []
+            [ div [ class effectClass ] []
             ]
 
 
@@ -113,7 +121,7 @@ viewBackground =
     div [ class "background" ] []
 
 
-scale : Int -> String
+scale : Float -> String
 scale zoom =
     "scale(" ++ (toString zoom) ++ ")"
 

@@ -57,7 +57,13 @@ type alias Model =
 type alias Effect =
     { pos : Pos
     , age : Time.Time
+    , type_ : EffectType
     }
+
+
+type EffectType
+    = BulletHit
+    | MinionDeath
 
 
 type alias Player =

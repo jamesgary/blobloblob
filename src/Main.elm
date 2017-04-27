@@ -228,7 +228,7 @@ collideMinionWithBullets minion bullets =
                         { minion | health = minion.health - conf.bullet.dmg }
 
                     effect =
-                        effectFromCollidable bullet
+                        effectFromCollidable BulletHit bullet
                 in
                     if damagedMinion.health > 0.0 then
                         let
@@ -238,7 +238,7 @@ collideMinionWithBullets minion bullets =
                             ( maybeMinion, unhitBullets, effect :: effects )
                     else
                         -- he's dead, jim
-                        ( Nothing, otherBullets, [ effect ] )
+                        ( Nothing, otherBullets, [ effect, effectFromCollidable MinionDeath damagedMinion ] )
             else
                 let
                     ( maybeMinion, unhitBullets, effects ) =
@@ -250,10 +250,11 @@ collideMinionWithBullets minion bullets =
             ( Just minion, [], [] )
 
 
-effectFromCollidable : Collidable a -> Effect
-effectFromCollidable collidable =
+effectFromCollidable : EffectType -> Collidable a -> Effect
+effectFromCollidable effectType collidable =
     { pos = collidable.pos
     , age = 0
+    , type_ = effectType
     }
 
 
@@ -268,7 +269,7 @@ collidePlayerWithMinions player minions =
     in
         ( { player | health = player.health - amtDmg }
         , uncollidedMinions
-        , List.map effectFromCollidable collidedMinions
+        , List.map (effectFromCollidable MinionDeath) collidedMinions
         )
 
 

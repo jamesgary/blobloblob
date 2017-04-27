@@ -136,6 +136,16 @@ html, body {
   position: absolute;
 }
 
+.effect.bullet-hit {
+  background: rgba(255, 255, 0, 0.8);
+  height: 50%;
+  width: 50%;
+}
+
+.effect.minion-death {
+  background: rgba(200, 0, 255, 0.9);
+}
+
 /* game over screen */
 
 .game-over {
