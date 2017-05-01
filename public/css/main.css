@@ -131,7 +131,6 @@ html, body {
 .effect {
   height: 100%;
   width: 100%;
-  background: rgba(255, 255, 255, 0.9);
   border-radius: 100%;
   position: absolute;
 }

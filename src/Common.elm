@@ -24,6 +24,7 @@ conf =
     , minion =
         { rad = 10
         , maxHealth = 10
+        , dmg = 100
         }
     , effects =
         { maxAge = 300
