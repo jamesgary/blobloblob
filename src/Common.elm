@@ -23,8 +23,10 @@ conf =
         }
     , minion =
         { rad = 10
-        , maxHealth = 10
+        , maxHealth = 5
         , dmg = 100
+        , speed = 0.9
+        , friction = 0.9
         }
     , effects =
         { maxAge = 300

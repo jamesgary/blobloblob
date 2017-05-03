@@ -42,7 +42,7 @@ init =
             , health = 1000
             , rad = conf.player.rad
             }
-      , arenaSize = ( 800, 450 )
+      , arenaSize = ( 1200, 675 )
       , fireCooldown = 0
       , spawnCooldown = 0
       , bullets = []
@@ -57,21 +57,15 @@ init =
             , isFiringLeft = False
             }
       , spawns =
-            [ { pos = ( 50, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 150, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 350, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 550, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 750, 50 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 50, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            [ { pos = ( 350, 350 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 550, 150 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 350, 450 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 550, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 950, 350 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = ( 350, 600 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             , { pos = ( 750, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             ]
-      , minions =
-            [ { pos = ( 300, 200 )
-              , vel = ( 1, 2 )
-              , rad = conf.minion.rad
-              , health = conf.minion.maxHealth
-              }
-            ]
+      , minions = []
       , effects = []
       }
     , Cmd.none
@@ -154,7 +148,7 @@ spawnMinions time model =
 spawnMinion : Spawn -> Minion
 spawnMinion spawn =
     { pos = spawn.pos
-    , vel = ( 1, 2 )
+    , vel = ( 0, 0 )
     , rad = conf.minion.rad
     , health = conf.minion.maxHealth
     }
@@ -307,46 +301,45 @@ fromDirsGetAngle up right down left =
 moveMinions : Time.Time -> Model -> Model
 moveMinions time model =
     { model
-        | minions = List.map (moveMinion time model.arenaSize) model.minions
+        | minions = List.map (moveMinion time model.player.pos model.arenaSize) model.minions
     }
 
 
-moveMinion : Time.Time -> ( Float, Float ) -> Minion -> Minion
-moveMinion time ( arenaWidth, arenaHeight ) minion =
+moveMinion : Time.Time -> Pos -> ( Float, Float ) -> Minion -> Minion
+moveMinion time ( playerPosX, playerPosY ) ( arenaWidth, arenaHeight ) minion =
     let
-        ( xDelta, yDelta ) =
-            minion.vel
-
-        ( x, y ) =
+        ( posX, posY ) =
             minion.pos
 
-        newX =
-            x + xDelta
+        newAngle =
+            atan2 (playerPosY - posY) (playerPosX - posX)
 
-        newY =
-            y + yDelta
+        ( xVel, yVel ) =
+            fromPolar ( conf.minion.speed, newAngle )
 
-        newXDelta =
-            if (newX < 0 || newX > arenaWidth) then
-                -1 * xDelta
-            else
-                xDelta
+        newPosX =
+            posX + xVel
 
-        newYDelta =
-            if (newY < 0 || newY > arenaHeight) then
-                -1 * yDelta
-            else
-                yDelta
+        newPosY =
+            posY + yVel
 
-        newX2 =
-            x + newXDelta
+        clampedPos =
+            ( (clamp conf.minion.rad (arenaWidth - conf.minion.rad) newPosX)
+            , (clamp conf.minion.rad (arenaHeight - conf.minion.rad) newPosY)
+            )
 
-        newY2 =
-            y + newYDelta
+        newVel =
+            ( xVel, yVel )
+
+        newMinion =
+            { minion
+                | pos = clampedPos
+                , vel = newVel
+            }
     in
         { minion
-            | pos = ( newX2, newY2 )
-            , vel = ( newXDelta, newYDelta )
+            | pos = ( newPosX, newPosY )
+            , vel = newVel
         }
 
 
