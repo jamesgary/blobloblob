@@ -14,7 +14,7 @@ import Time
 
 import Common exposing (..)
 import Collisions exposing (checkCollisions)
-import Input exposing (..)
+import Input exposing (updateKeyDown, updateKeyUp)
 import View exposing (view)
 
 
@@ -58,10 +58,6 @@ init =
             }
       , spawns =
             [ { pos = ( 350, 350 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 550, 150 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 350, 450 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 550, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 950, 350 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             , { pos = ( 350, 600 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             , { pos = ( 750, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             ]
@@ -311,17 +307,26 @@ moveMinion time ( playerPosX, playerPosY ) ( arenaWidth, arenaHeight ) minion =
         ( posX, posY ) =
             minion.pos
 
+        ( velX, velY ) =
+            minion.vel
+
         newAngle =
             atan2 (playerPosY - posY) (playerPosX - posX)
 
-        ( xVel, yVel ) =
+        ( accX, accY ) =
             fromPolar ( conf.minion.speed, newAngle )
 
+        newVelX =
+            (velX + accX) * conf.minion.friction
+
+        newVelY =
+            (velY + accY) * conf.minion.friction
+
         newPosX =
-            posX + xVel
+            posX + newVelX
 
         newPosY =
-            posY + yVel
+            posY + newVelY
 
         clampedPos =
             ( (clamp conf.minion.rad (arenaWidth - conf.minion.rad) newPosX)
@@ -329,7 +334,7 @@ moveMinion time ( playerPosX, playerPosY ) ( arenaWidth, arenaHeight ) minion =
             )
 
         newVel =
-            ( xVel, yVel )
+            ( newVelX, newVelY )
 
         newMinion =
             { minion

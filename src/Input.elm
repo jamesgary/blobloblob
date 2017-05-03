@@ -1,4 +1,4 @@
-module Input exposing (..)
+module Input exposing (updateKeyDown, updateKeyUp)
 
 import Char
 import Common exposing (..)

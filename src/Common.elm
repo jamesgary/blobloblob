@@ -25,8 +25,8 @@ conf =
         { rad = 10
         , maxHealth = 5
         , dmg = 100
-        , speed = 0.9
-        , friction = 0.9
+        , speed = 1.5
+        , friction = 0.7
         }
     , effects =
         { maxAge = 300
