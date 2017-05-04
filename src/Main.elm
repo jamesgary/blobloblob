@@ -37,7 +37,7 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { player =
-            { pos = ( 400, 225 )
+            { pos = ( 700, 737 )
             , vel = ( 0, 0 )
             , health = 1000
             , rad = conf.player.rad
@@ -176,9 +176,9 @@ movePlayer time model =
 
         yDir =
             if model.currentInputs.isMovingUp then
-                -1
-            else if model.currentInputs.isMovingDown then
                 1
+            else if model.currentInputs.isMovingDown then
+                -1
             else
                 0
 
@@ -267,25 +267,25 @@ fromDirsGetAngle up right down left =
     turns <|
         case ( up, right, down, left ) of
             ( True, True, _, _ ) ->
-                0.875
-
-            ( True, _, _, True ) ->
-                0.625
-
-            ( _, _, True, True ) ->
-                0.375
-
-            ( _, True, True, _ ) ->
                 0.125
 
+            ( True, _, _, True ) ->
+                0.375
+
+            ( _, _, True, True ) ->
+                0.625
+
+            ( _, True, True, _ ) ->
+                0.875
+
             ( True, _, _, _ ) ->
-                0.75
+                0.25
 
             ( _, True, _, _ ) ->
                 0
 
             ( _, _, True, _ ) ->
-                0.25
+                0.75
 
             ( _, _, _, True ) ->
                 0.5
