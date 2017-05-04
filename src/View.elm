@@ -55,9 +55,9 @@ viewArena model =
             , size = ( arenaWidthInt, arenaHeightInt )
             }
             ([ renderPlayer model.player ]
-                ++ (List.map renderMinion model.minions)
-                ++ (List.map renderBullet model.bullets)
                 ++ (List.map renderSpawn model.spawns)
+                ++ (List.map renderBullet model.bullets)
+                ++ (List.map renderMinion model.minions)
             )
 
 
