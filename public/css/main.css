@@ -169,3 +169,12 @@ html, body {
   margin-top: 20%;
   text-shadow: 1px 1px 2px darkred;
 }
+
+.debug {
+  position: fixed;
+  top: 0;
+  right: 0;
+  font-family: monospace;
+  color: white;
+  font-size: 18px;
+}
