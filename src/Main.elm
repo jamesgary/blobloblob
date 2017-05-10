@@ -8,7 +8,7 @@ import Keyboard
 import Json.Decode as Json
 import AnimationFrame
 import Time
-import Math.Vector2 exposing (..)
+import Math.Vector2 exposing (toTuple, vec2)
 
 
 -- mine
@@ -38,8 +38,8 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { player =
-            { pos = fromTuple ( 700, 737 )
-            , vel = fromTuple ( 0, 0 )
+            { pos = vec2 700 737
+            , vel = vec2 0 0
             , health = 1000
             , rad = conf.player.rad
             }
@@ -58,9 +58,9 @@ init =
             , isFiringLeft = False
             }
       , spawns =
-            [ { pos = fromTuple ( 350, 350 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = fromTuple ( 350, 600 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = fromTuple ( 750, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            [ { pos = (vec2 350 350), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = (vec2 350 600), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = (vec2 750 400), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             ]
       , minions = []
       , effects = []
@@ -145,7 +145,7 @@ spawnMinions time model =
 spawnMinion : Spawn -> Minion
 spawnMinion spawn =
     { pos = spawn.pos
-    , vel = fromTuple ( 0, 0 )
+    , vel = vec2 0 0
     , rad = conf.minion.rad
     , health = conf.minion.maxHealth
     }
@@ -206,17 +206,17 @@ movePlayer time model =
             model.arenaSize
 
         clampedPos =
-            ( (clamp conf.player.rad (arenaWidth - conf.player.rad) newPosX)
-            , (clamp conf.player.rad (arenaHeight - conf.player.rad) newPosY)
-            )
+            vec2
+                (clamp conf.player.rad (arenaWidth - conf.player.rad) newPosX)
+                (clamp conf.player.rad (arenaHeight - conf.player.rad) newPosY)
 
         newVel =
-            ( newVelX, newVelY )
+            vec2 newVelX newVelY
 
         newPlayer =
             { player
-                | pos = fromTuple clampedPos
-                , vel = fromTuple newVel
+                | pos = clampedPos
+                , vel = newVel
             }
     in
         { model | player = newPlayer }
@@ -360,21 +360,21 @@ moveMinion time playerPos ( arenaWidth, arenaHeight ) minion =
             posY + newVelY
 
         clampedPos =
-            ( (clamp conf.minion.rad (arenaWidth - conf.minion.rad) newPosX)
-            , (clamp conf.minion.rad (arenaHeight - conf.minion.rad) newPosY)
-            )
+            vec2
+                (clamp conf.minion.rad (arenaWidth - conf.minion.rad) newPosX)
+                (clamp conf.minion.rad (arenaHeight - conf.minion.rad) newPosY)
 
         newVel =
-            fromTuple ( newVelX, newVelY )
+            vec2 newVelX newVelY
 
         newMinion =
             { minion
-                | pos = fromTuple clampedPos
+                | pos = clampedPos
                 , vel = newVel
             }
     in
         { minion
-            | pos = fromTuple ( newPosX, newPosY )
+            | pos = vec2 newPosX newPosY
             , vel = newVel
         }
 
@@ -406,7 +406,7 @@ moveBullet time ( arenaWidth, arenaHeight ) bullet =
         else
             Just
                 { bullet
-                    | pos = fromTuple ( newX, newY )
+                    | pos = vec2 newX newY
                 }
 
 

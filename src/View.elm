@@ -7,7 +7,7 @@ import Svg exposing (svg, circle)
 import Svg.Attributes as SvgAttr
 import Keyboard
 import Json.Decode as Json
-import Math.Vector2 exposing (toTuple, fromTuple)
+import Math.Vector2 exposing (vec2, toTuple)
 
 
 -- mine
@@ -205,7 +205,7 @@ adjustPos pos adj =
         adjustedY =
             y + adj
     in
-        fromTuple ( adjustedX, adjustedY )
+        vec2 adjustedX adjustedY
 
 
 viewMinions : Model -> Html Msg
