@@ -326,7 +326,29 @@ collideMMs minion minions =
 
 collideMM : Minion -> Minion -> ( Minion, Minion )
 collideMM m1 m2 =
-    ( m1, m2 )
+    let
+        distSq =
+            Vector2.distanceSquared m1.pos m2.pos
+    in
+        if distSq < (conf.minion.rad * 2) ^ 2 then
+            let
+                dir =
+                    Vector2.direction m1.pos m2.pos
+
+                acc =
+                    Vector2.scale (distSq * 0.001) dir
+
+                newVel1 =
+                    Vector2.add m1.vel acc
+
+                newVel2 =
+                    Vector2.sub m2.vel acc
+            in
+                ( { m1 | vel = newVel1 }
+                , { m2 | vel = newVel2 }
+                )
+        else
+            ( m1, m2 )
 
 
 moveMinion : Time.Time -> Pos -> ( Float, Float ) -> Minion -> Minion
