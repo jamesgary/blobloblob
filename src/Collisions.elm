@@ -165,7 +165,7 @@ effectFromCollidable effectType collidable =
 
 collideObjects : Collidable a -> Collidable b -> Bool
 collideObjects obj1 obj2 =
-    Vector2.distanceSquared obj1.pos obj2.pos < obj1.rad + obj2.rad
+    Vector2.distanceSquared obj1.pos obj2.pos < (obj1.rad + obj2.rad) ^ 2
 
 
 

@@ -39,7 +39,7 @@ init : ( Model, Cmd Msg )
 init =
     ( { player =
             { pos = fromTuple ( 700, 737 )
-            , vel = ( 0, 0 )
+            , vel = fromTuple ( 0, 0 )
             , health = 1000
             , rad = conf.player.rad
             }
@@ -145,7 +145,7 @@ spawnMinions time model =
 spawnMinion : Spawn -> Minion
 spawnMinion spawn =
     { pos = spawn.pos
-    , vel = ( 0, 0 )
+    , vel = fromTuple ( 0, 0 )
     , rad = conf.minion.rad
     , health = conf.minion.maxHealth
     }
@@ -190,7 +190,7 @@ movePlayer time model =
             toTuple player.pos
 
         ( velX, velY ) =
-            player.vel
+            toTuple player.vel
 
         ( newVelX, newVelY ) =
             ( ((velX + (xDir * conf.player.speed)) * conf.player.friction)
@@ -216,7 +216,7 @@ movePlayer time model =
         newPlayer =
             { player
                 | pos = fromTuple clampedPos
-                , vel = newVel
+                , vel = fromTuple newVel
             }
     in
         { model | player = newPlayer }
@@ -339,7 +339,7 @@ moveMinion time playerPos ( arenaWidth, arenaHeight ) minion =
             toTuple minion.pos
 
         ( velX, velY ) =
-            minion.vel
+            toTuple minion.vel
 
         newAngle =
             atan2 (playerPosY - posY) (playerPosX - posX)
@@ -365,7 +365,7 @@ moveMinion time playerPos ( arenaWidth, arenaHeight ) minion =
             )
 
         newVel =
-            ( newVelX, newVelY )
+            fromTuple ( newVelX, newVelY )
 
         newMinion =
             { minion

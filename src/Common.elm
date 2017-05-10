@@ -73,7 +73,7 @@ type EffectType
 
 type alias Player =
     { pos : Pos
-    , vel : ( Float, Float )
+    , vel : Vel
     , health : Float
     , rad : Float
     }
@@ -81,13 +81,17 @@ type alias Player =
 
 type alias Minion =
     { pos : Pos
-    , vel : ( Float, Float )
+    , vel : Vel
     , rad : Float
     , health : Float
     }
 
 
 type alias Pos =
+    Vec2
+
+
+type alias Vel =
     Vec2
 
 
