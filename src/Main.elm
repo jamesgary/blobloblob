@@ -8,7 +8,7 @@ import Keyboard
 import Json.Decode as Json
 import AnimationFrame
 import Time
-import Math.Vector2 exposing (toTuple, vec2)
+import Math.Vector2 as Vector2 exposing (toTuple, vec2, dot, fromTuple)
 
 
 -- mine
@@ -331,52 +331,37 @@ collideMM m1 m2 =
 
 moveMinion : Time.Time -> Pos -> ( Float, Float ) -> Minion -> Minion
 moveMinion time playerPos ( arenaWidth, arenaHeight ) minion =
+    -- minions move at a constant acceleration, clamped velocity
     let
-        ( playerPosX, playerPosY ) =
-            toTuple playerPos
+        direction =
+            Vector2.direction playerPos minion.pos
 
-        ( posX, posY ) =
-            toTuple minion.pos
-
-        ( velX, velY ) =
-            toTuple minion.vel
-
-        newAngle =
-            atan2 (playerPosY - posY) (playerPosX - posX)
-
-        ( accX, accY ) =
-            fromPolar ( conf.minion.speed, newAngle )
-
-        newVelX =
-            (velX + accX) * conf.minion.friction
-
-        newVelY =
-            (velY + accY) * conf.minion.friction
-
-        newPosX =
-            posX + newVelX
-
-        newPosY =
-            posY + newVelY
-
-        clampedPos =
-            vec2
-                (clamp conf.minion.rad (arenaWidth - conf.minion.rad) newPosX)
-                (clamp conf.minion.rad (arenaHeight - conf.minion.rad) newPosY)
+        newAcc =
+            Vector2.scale conf.minion.acc direction
 
         newVel =
-            vec2 newVelX newVelY
+            Vector2.add newAcc minion.vel
 
+        ratioOverLimit =
+            (Vector2.length newVel) / conf.minion.maxVelDir
+
+        clampedVel =
+            (Vector2.scale (1 / ratioOverLimit) newVel)
+
+        newPos =
+            Vector2.add clampedVel minion.pos
+
+        --clampedPos =
+        --    vec2
+        --        (clamp conf.minion.rad (arenaWidth - conf.minion.rad) newPosX)
+        --        (clamp conf.minion.rad (arenaHeight - conf.minion.rad) newPosY)
         newMinion =
             { minion
-                | pos = clampedPos
-                , vel = newVel
+                | pos = newPos
+                , vel = clampedVel
             }
     in
-        { minion
-            | pos = vec2 newPosX newPosY
-            , vel = newVel
-        }
+        newMinion
 
 
 moveBullets : Time.Time -> Model -> Model

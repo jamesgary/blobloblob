@@ -26,7 +26,8 @@ conf =
         { rad = 10
         , maxHealth = 5
         , dmg = 100
-        , speed = 0.08
+        , maxVelDir = 4
+        , acc = 0.1
         , friction = 0.99
         }
     , effects =
@@ -92,6 +93,10 @@ type alias Pos =
 
 
 type alias Vel =
+    Vec2
+
+
+type alias Acc =
     Vec2
 
 
