@@ -3,6 +3,7 @@ module Collisions exposing (checkCollisions)
 -- mine
 
 import Common exposing (..)
+import Math.Vector2 as Vector2
 
 
 checkCollisions : Model -> Model
@@ -164,21 +165,21 @@ effectFromCollidable effectType collidable =
 
 collideObjects : Collidable a -> Collidable b -> Bool
 collideObjects obj1 obj2 =
-    -- is a^2 + b^2 > (rad1 + rad2)^2?
-    let
-        ( x1, y1 ) =
-            obj1.pos
+    Vector2.distanceSquared obj1.pos obj2.pos < obj1.rad + obj2.rad
 
-        ( x2, y2 ) =
-            obj2.pos
 
-        a =
-            x1 - x2
 
-        b =
-            y1 - y2
-
-        c =
-            obj1.rad + obj2.rad
-    in
-        (a ^ 2) + (b ^ 2) < (c ^ 2)
+-- is a^2 + b^2 > (rad1 + rad2)^2?
+--let
+--    ( x1, y1 ) =
+--        obj1.pos
+--    ( x2, y2 ) =
+--        obj2.pos
+--    a =
+--        x1 - x2
+--    b =
+--        y1 - y2
+--    c =
+--        obj1.rad + obj2.rad
+--in
+--    (a ^ 2) + (b ^ 2) < (c ^ 2)

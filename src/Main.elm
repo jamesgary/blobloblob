@@ -8,6 +8,7 @@ import Keyboard
 import Json.Decode as Json
 import AnimationFrame
 import Time
+import Math.Vector2 exposing (..)
 
 
 -- mine
@@ -37,7 +38,7 @@ main =
 init : ( Model, Cmd Msg )
 init =
     ( { player =
-            { pos = ( 700, 737 )
+            { pos = fromTuple ( 700, 737 )
             , vel = ( 0, 0 )
             , health = 1000
             , rad = conf.player.rad
@@ -57,9 +58,9 @@ init =
             , isFiringLeft = False
             }
       , spawns =
-            [ { pos = ( 350, 350 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 350, 600 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
-            , { pos = ( 750, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            [ { pos = fromTuple ( 350, 350 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = fromTuple ( 350, 600 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
+            , { pos = fromTuple ( 750, 400 ), health = conf.spawn.maxHealth, rad = conf.spawn.rad }
             ]
       , minions = []
       , effects = []
@@ -186,7 +187,7 @@ movePlayer time model =
             model.player
 
         ( posX, posY ) =
-            player.pos
+            toTuple player.pos
 
         ( velX, velY ) =
             player.vel
@@ -214,7 +215,7 @@ movePlayer time model =
 
         newPlayer =
             { player
-                | pos = clampedPos
+                | pos = fromTuple clampedPos
                 , vel = newVel
             }
     in
@@ -325,41 +326,17 @@ collideMMs minion minions =
 
 collideMM : Minion -> Minion -> ( Minion, Minion )
 collideMM m1 m2 =
-    --let
-    --    ( x1, y1 ) =
-    --        m1.pos
-    --    ( x2, y2 ) =
-    --        m2.pos
-    --    dist =
-    --        sqrt (((x1 - x2) ^ 2) + ((y1 - y2) ^ 2))
-    --in
-    --    if dist < (conf.minion.rad * 2) then
-    --        let
-    --            ( vx1, vy1 ) =
-    --                m1.vel
-    --            ( vx2, vy2 ) =
-    --                m2.vel
-    --            nx =
-    --                (x2 - x1) / dist
-    --            ny =
-    --                (y2 - y1) / dist
-    --            p =
-    --                2.5 * (vx1 * nx + vy1 * ny - vx2 * nx - vy2 * ny) / (2)
-    --            newM1 =
-    --                { m1 | vel = ( vx1 - p * nx, vy1 - p * ny ) }
-    --            newM2 =
-    --                { m2 | vel = ( vx2 + p * nx, vy2 + p * ny ) }
-    --        in
-    --            ( newM1, newM2 )
-    --    else
     ( m1, m2 )
 
 
 moveMinion : Time.Time -> Pos -> ( Float, Float ) -> Minion -> Minion
-moveMinion time ( playerPosX, playerPosY ) ( arenaWidth, arenaHeight ) minion =
+moveMinion time playerPos ( arenaWidth, arenaHeight ) minion =
     let
+        ( playerPosX, playerPosY ) =
+            toTuple playerPos
+
         ( posX, posY ) =
-            minion.pos
+            toTuple minion.pos
 
         ( velX, velY ) =
             minion.vel
@@ -392,12 +369,12 @@ moveMinion time ( playerPosX, playerPosY ) ( arenaWidth, arenaHeight ) minion =
 
         newMinion =
             { minion
-                | pos = clampedPos
+                | pos = fromTuple clampedPos
                 , vel = newVel
             }
     in
         { minion
-            | pos = ( newPosX, newPosY )
+            | pos = fromTuple ( newPosX, newPosY )
             , vel = newVel
         }
 
@@ -416,7 +393,7 @@ moveBullet time ( arenaWidth, arenaHeight ) bullet =
             fromPolar ( conf.bullet.speed, bullet.angle )
 
         ( x, y ) =
-            bullet.pos
+            toTuple bullet.pos
 
         newX =
             x + xDelta
@@ -429,7 +406,7 @@ moveBullet time ( arenaWidth, arenaHeight ) bullet =
         else
             Just
                 { bullet
-                    | pos = ( newX, newY )
+                    | pos = fromTuple ( newX, newY )
                 }
 
 

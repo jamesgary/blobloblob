@@ -2,6 +2,7 @@ module Render exposing (renderArena)
 
 import Html exposing (Html)
 import Color
+import Math.Vector2 as Vector2
 
 
 -- elm-2d
@@ -64,7 +65,7 @@ renderCircle : Pos -> Float -> Color.Color -> Renderable
 renderCircle pos rad color =
     let
         ( x, y ) =
-            pos
+            Vector2.toTuple pos
     in
         Render.shape circle
             { color = color

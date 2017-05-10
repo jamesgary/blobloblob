@@ -2,9 +2,12 @@ module View exposing (view)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Svg exposing (svg)
+import Html.Events exposing (..)
+import Svg exposing (svg, circle)
 import Svg.Attributes as SvgAttr
-import Color
+import Keyboard
+import Json.Decode as Json
+import Math.Vector2 exposing (toTuple, fromTuple)
 
 
 -- mine
@@ -22,9 +25,9 @@ view model =
     div
         [ class "game" ]
         [ renderArena model
-
-        --, viewArena
         , viewDebug model
+
+        --viewArena model
         ]
 
 
@@ -40,7 +43,7 @@ viewArena model =
             model.arenaSize
 
         ( playerX, playerY ) =
-            model.player.pos
+            toTuple model.player.pos
 
         -- centered
         --( cameraOriginX, cameraOriginY ) =
@@ -91,7 +94,7 @@ viewEffect : Effect -> Html Msg
 viewEffect effect =
     let
         ( x, y ) =
-            effect.pos
+            toTuple effect.pos
 
         percAged =
             effect.age / conf.effects.maxAge
@@ -153,7 +156,7 @@ viewPlayer model =
             conf.player.rad
 
         ( x, y ) =
-            model.player.pos
+            toTuple model.player.pos
     in
         div
             [ class "player-container"
@@ -177,7 +180,7 @@ viewObject : String -> Pos -> Float -> Html Msg
 viewObject className pos rad =
     let
         ( x, y ) =
-            adjustPos pos (-1 * rad)
+            toTuple (adjustPos pos (-1 * rad))
     in
         div
             [ class className
@@ -194,7 +197,7 @@ adjustPos : Pos -> Float -> Pos
 adjustPos pos adj =
     let
         ( x, y ) =
-            pos
+            toTuple pos
 
         adjustedX =
             x + adj
@@ -202,7 +205,7 @@ adjustPos pos adj =
         adjustedY =
             y + adj
     in
-        ( adjustedX, adjustedY )
+        fromTuple ( adjustedX, adjustedY )
 
 
 viewMinions : Model -> Html Msg
@@ -214,7 +217,7 @@ viewMinion : Minion -> Html Msg
 viewMinion minion =
     let
         ( x, y ) =
-            minion.pos
+            toTuple minion.pos
     in
         div
             [ class "minion-container"
@@ -253,7 +256,7 @@ viewSpawn : Spawn -> Html Msg
 viewSpawn spawn =
     let
         ( x, y ) =
-            spawn.pos
+            toTuple spawn.pos
     in
         div
             [ class "spawn-container"
@@ -283,8 +286,8 @@ viewHealth health max =
             (toString (50 * perc * pi)) ++ "% 9999%"
     in
         svg [ SvgAttr.class "health-container" ]
-            [ Svg.circle [ SvgAttr.class "health-bg" ] []
-            , Svg.circle
+            [ circle [ SvgAttr.class "health-bg" ] []
+            , circle
                 [ SvgAttr.class "health-dmg"
                 , SvgAttr.strokeDasharray sda
                 ]

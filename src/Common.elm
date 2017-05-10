@@ -1,6 +1,7 @@
 module Common exposing (..)
 
 import Time
+import Math.Vector2 exposing (Vec2)
 
 
 conf =
@@ -87,7 +88,7 @@ type alias Minion =
 
 
 type alias Pos =
-    ( Float, Float )
+    Vec2
 
 
 type alias Spawn =
