@@ -296,9 +296,63 @@ fromDirsGetAngle up right down left =
 
 moveMinions : Time.Time -> Model -> Model
 moveMinions time model =
-    { model
-        | minions = List.map (moveMinion time model.player.pos model.arenaSize) model.minions
-    }
+    let
+        movedMinions =
+            List.map (moveMinion time model.player.pos model.arenaSize) model.minions
+
+        collidedMinions =
+            List.foldr collideMMs [] movedMinions
+    in
+        { model | minions = collidedMinions }
+
+
+collideMMs : Minion -> List Minion -> List Minion
+collideMMs minion minions =
+    case minions of
+        m :: otherMinions ->
+            let
+                ( m1, m2 ) =
+                    (collideMM minion m)
+
+                collidedOMs =
+                    collideMMs m1 (otherMinions)
+            in
+                m2 :: collidedOMs
+
+        [] ->
+            [ minion ]
+
+
+collideMM : Minion -> Minion -> ( Minion, Minion )
+collideMM m1 m2 =
+    --let
+    --    ( x1, y1 ) =
+    --        m1.pos
+    --    ( x2, y2 ) =
+    --        m2.pos
+    --    dist =
+    --        sqrt (((x1 - x2) ^ 2) + ((y1 - y2) ^ 2))
+    --in
+    --    if dist < (conf.minion.rad * 2) then
+    --        let
+    --            ( vx1, vy1 ) =
+    --                m1.vel
+    --            ( vx2, vy2 ) =
+    --                m2.vel
+    --            nx =
+    --                (x2 - x1) / dist
+    --            ny =
+    --                (y2 - y1) / dist
+    --            p =
+    --                2.5 * (vx1 * nx + vy1 * ny - vx2 * nx - vy2 * ny) / (2)
+    --            newM1 =
+    --                { m1 | vel = ( vx1 - p * nx, vy1 - p * ny ) }
+    --            newM2 =
+    --                { m2 | vel = ( vx2 + p * nx, vy2 + p * ny ) }
+    --        in
+    --            ( newM1, newM2 )
+    --    else
+    ( m1, m2 )
 
 
 moveMinion : Time.Time -> Pos -> ( Float, Float ) -> Minion -> Minion

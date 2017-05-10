@@ -19,14 +19,14 @@ conf =
     , spawn =
         { rad = 30
         , maxHealth = 100
-        , cooldown = 1000
+        , cooldown = 200
         }
     , minion =
         { rad = 10
         , maxHealth = 5
         , dmg = 100
-        , speed = 1.5
-        , friction = 0.7
+        , speed = 0.08
+        , friction = 0.99
         }
     , effects =
         { maxAge = 300
